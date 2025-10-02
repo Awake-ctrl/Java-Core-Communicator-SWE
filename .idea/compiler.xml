@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="PizzaBuilder_Software_122201017_IndividualProject" />
+        <module name="module-cloud" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="PizzaBuilder_Software_122201017_IndividualProject" target="24" />
+    </bytecodeTargetLevel>
   </component>
 </project>
