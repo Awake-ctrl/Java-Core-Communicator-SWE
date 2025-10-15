@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Cloud-Java-App.iml" filepath="$PROJECT_DIR$/Cloud-Java-App.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Java-Core-Communicator-SWE.iml" filepath="$PROJECT_DIR$/.idea/Java-Core-Communicator-SWE.iml" />
     </modules>
   </component>
