@@ -1,3 +1,3 @@
 package models;
 
-public record CanvasCreateResponse(String canvasId) { }
+public record CanvasCreateResponse(boolean status) { }

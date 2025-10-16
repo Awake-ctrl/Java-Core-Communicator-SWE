@@ -6,7 +6,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="controller-cloud-module" />
         <module name="canvas-cloud-module" />
       </profile>
       <profile name="Annotation profile for Java-Core-Communicator-SWE" enabled="true">
@@ -27,6 +26,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/objenesis/objenesis/2.6/objenesis-2.6.jar" />
         </processorPath>
         <module name="chat-cloud-module" />
+        <module name="controller-cloud-module" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
