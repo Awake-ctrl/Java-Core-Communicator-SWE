@@ -24,7 +24,7 @@
                 <artifactId>azure-functions-maven-plugin</artifactId>
                 <version>1.18.0</version>
                 <configuration>
-                    <appName>chat-cloud-function-app</appName>
+                    <appName>chat-cloud</appName>
                     <resourceGroup>rg-module-cloud</resourceGroup>
                     <region>centralindia</region>
                     <runtime>
@@ -63,16 +63,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.16.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.16.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
             <version>2.16.2</version>
         </dependency>
     </dependencies>

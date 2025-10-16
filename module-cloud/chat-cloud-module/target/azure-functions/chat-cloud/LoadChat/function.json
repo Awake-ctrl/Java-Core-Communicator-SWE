@@ -1,0 +1,16 @@
+{
+  "scriptFile" : "../chat-cloud-module-1.0-SNAPSHOT.jar",
+  "entryPoint" : "functionapps.LoadChat.run",
+  "bindings" : [ {
+    "type" : "httpTrigger",
+    "direction" : "in",
+    "name" : "req",
+    "methods" : [ "POST" ],
+    "dataType" : "binary",
+    "authLevel" : "FUNCTION"
+  }, {
+    "type" : "http",
+    "direction" : "out",
+    "name" : "$return"
+  } ]
+}

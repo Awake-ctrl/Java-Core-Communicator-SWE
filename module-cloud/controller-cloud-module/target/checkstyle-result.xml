@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.3">
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\functionapps\Register.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\interfaces\IControllerCloudService.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\models\LoginRequest.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\models\LoginResponse.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\models\OTPRequest.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\models\OTPResponse.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\models\RegisterRequest.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\controller-cloud-module\src\main\java\models\RegisterResponse.java">
+</file>
+</checkstyle>

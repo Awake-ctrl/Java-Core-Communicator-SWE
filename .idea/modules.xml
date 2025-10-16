@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Cloud-Java-App.iml" filepath="$PROJECT_DIR$/Cloud-Java-App.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/Java-Core-Communicator-SWE.iml" filepath="$PROJECT_DIR$/.idea/Java-Core-Communicator-SWE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/PizzaBuilder_Software_122201017_IndividualProject.iml" filepath="$PROJECT_DIR$/java/PizzaBuilder_Software_122201017_IndividualProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module-cloud/controller-cloud-module/controller-cloud-module.iml" filepath="$PROJECT_DIR$/module-cloud/controller-cloud-module/controller-cloud-module.iml" />
     </modules>
   </component>
 </project>

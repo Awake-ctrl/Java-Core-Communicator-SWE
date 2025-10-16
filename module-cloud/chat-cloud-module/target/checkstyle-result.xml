@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.3">
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\functionapps\LoadChat.java">
+<error line="53" severity="warning" message="Line is longer than 120 characters (found 161)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\functionapps\NewChat.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\interfaces\IChatCloudService.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\models\ChatLoadRequest.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\models\ChatLoadResponse.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\models\ChatMessageDTO.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\models\ChatNewRequest.java">
+</file>
+<file name="C:\Users\sidar\OneDrive\Desktop\SW Engineering Course\Java-Core-Communicator-SWE\module-cloud\chat-cloud-module\src\main\java\models\ChatNewResponse.java">
+</file>
+</checkstyle>
