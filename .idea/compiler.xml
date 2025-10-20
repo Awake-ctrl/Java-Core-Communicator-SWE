@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="cloud-function-app" />
         <module name="canvas-cloud-module" />
       </profile>
       <profile name="Annotation profile for Java-Core-Communicator-SWE" enabled="true">
