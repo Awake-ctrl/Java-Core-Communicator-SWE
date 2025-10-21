@@ -1,0 +1,38 @@
+name: Deploy Java project to Azure Function App
+
+on:
+  [push]
+
+env:
+  AZURE_FUNCTIONAPP_NAME: 'controller-cloud'   # set this to your function app name on Azure
+  POM_XML_DIRECTORY: 'module-cloud/controller-cloud-module'   # set this to the directory which contains pom.xml file
+  JAVA_VERSION: '17'                         # set this to the java version to use (e.g. '8', '11', '17')
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    environment: dev
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v4
+
+      - name: Setup Java Sdk ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 'Restore Project Dependencies Using Mvn'
+        shell: pwsh
+        run: |
+          pushd './${{ env.POM_XML_DIRECTORY }}'
+          mvn clean package
+          popd
+
+      - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: '${{ env.POM_XML_DIRECTORY }}'
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          respect-pom-xml: true
