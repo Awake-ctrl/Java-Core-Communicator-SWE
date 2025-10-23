@@ -1,6 +1,6 @@
 /******************************************************************************
  * Filename    = IdbConnector.java
- * Author      =
+ * Author      = Nikhil S Thomas
  * Product     = cloud-function-app
  * Project     = Comm-Uni-Cator
  * Description = Defines an interface for database operations in the cloud module.

@@ -1,6 +1,6 @@
 /******************************************************************************
  * Filename    = CloudHelper.java
- * Author      =
+ * Author      = Nikhil S Thomas
  * Product     = cloud-function-app
  * Project     = Comm-Uni-Cator
  * Description = Defines helper functions for handling HTTP requests and errors.

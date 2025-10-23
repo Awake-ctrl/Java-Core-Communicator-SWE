@@ -1,6 +1,6 @@
 /******************************************************************************
  * Filename    = CloudPost.java
- * Author      =
+ * Author      = Nikhil S Thomas
  * Product     = cloud-function-app
  * Project     = Comm-Uni-Cator
  * Description = Defines custom Azure Function App API for storing a record.
