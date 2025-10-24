@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Cloud-Java-App.iml" filepath="$PROJECT_DIR$/Cloud-Java-App.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/PizzaBuilder_Software_122201017_IndividualProject.iml" filepath="$PROJECT_DIR$/java/PizzaBuilder_Software_122201017_IndividualProject.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module-cloud/canvas-cloud-module/canvas-cloud-module.iml" filepath="$PROJECT_DIR$/module-cloud/canvas-cloud-module/canvas-cloud-module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module-cloud/cloud-function-app/cloud-function-app.iml" filepath="$PROJECT_DIR$/module-cloud/cloud-function-app/cloud-function-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/module-cloud/controller-cloud-module/controller-cloud-module.iml" filepath="$PROJECT_DIR$/module-cloud/controller-cloud-module/controller-cloud-module.iml" />
     </modules>
   </component>
