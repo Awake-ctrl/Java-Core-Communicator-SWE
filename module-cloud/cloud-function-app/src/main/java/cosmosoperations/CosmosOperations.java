@@ -15,7 +15,7 @@ public class CosmosOperations implements IdbConnector {
         try {
             client = new CosmosClientBuilder()
                     .endpoint("https://kallepally.documents.azure.com:443/")
-                    .key("TWjalrmKnG9a6ILf4mEkalzDf8iG2OeUpaI2E36aeSkesHGRgfgg4whnjJXgFpkqIPfBHXXZymFyACDbkCcHGA==")
+//                    .key("TWjalrmKnG9a6ILf4mEkalzDf8iG2OeUpaI2E36aeSkesHGRgfgg4whnjJXgFpkqIPfBHXXZymFyACDbkCcHGA==")
                     .consistencyLevel(ConsistencyLevel.EVENTUAL)
                     .contentResponseOnWriteEnabled(true)
                     .buildClient();
