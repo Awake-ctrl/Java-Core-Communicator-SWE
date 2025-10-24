@@ -17,6 +17,7 @@
         <module>chat-cloud-module</module>
         <module>canvas-cloud-module</module>
         <module>controller-cloud-module</module>
+        <module>cloud-function-app</module>
     </modules>
 
     <properties>
