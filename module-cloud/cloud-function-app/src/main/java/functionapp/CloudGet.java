@@ -20,6 +20,7 @@ import com.microsoft.azure.functions.annotation.AuthorizationLevel;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
 
+import cosmosoperations.CosmosOperations;
 import datastructures.Entity;
 import datastructures.Response;
 import interfaces.IdbConnector;
@@ -46,7 +47,8 @@ public class CloudGet extends CloudHelper {
             final String jsonBody = request.getBody().orElse("");
             final Entity entityRequest = getObjectMapper().readValue(jsonBody, Entity.class);
 
-            final IdbConnector dbConnector = dbConnectorFactory.getDbConnector();
+            final IdbConnector dbConnector = new CosmosOperations();
+            dbConnector.init();
             final JsonNode data = dbConnector.getData(entityRequest);
             final Response response = new Response(200, "success", data);
 

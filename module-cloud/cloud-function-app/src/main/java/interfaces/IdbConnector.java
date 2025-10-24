@@ -15,6 +15,9 @@ import datastructures.Entity;
  * Interface for performing CRUD operations on cloud database entities.
  */
 public interface IdbConnector {
+
+    void init();
+
     JsonNode getData(Entity request);
 
     JsonNode postData(Entity request);
