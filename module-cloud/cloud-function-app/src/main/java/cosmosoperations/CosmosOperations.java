@@ -1,8 +1,8 @@
 package cosmosoperations;
 
 import com.azure.cosmos.*;
-import com.fasterxml.jackson.databind.JsonNode;
 import datastructures.Entity;
+import datastructures.Response;
 import interfaces.IdbConnector;
 
 public class CosmosOperations implements IdbConnector {
@@ -29,27 +29,27 @@ public class CosmosOperations implements IdbConnector {
     }
 
     @Override
-    public JsonNode getData(Entity request) {
+    public Response getData(Entity request) {
         return null;
     }
 
     @Override
-    public JsonNode postData(Entity request) {
+    public Response postData(Entity request) {
         return null;
     }
 
     @Override
-    public JsonNode createData(Entity request) {
+    public Response createData(Entity request) {
         return null;
     }
 
     @Override
-    public JsonNode deleteData(Entity request) {
+    public Response deleteData(Entity request) {
         return null;
     }
 
     @Override
-    public JsonNode updateData(Entity request) {
+    public Response updateData(Entity request) {
         return null;
     }
 }

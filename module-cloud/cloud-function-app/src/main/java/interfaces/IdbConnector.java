@@ -8,8 +8,8 @@
 
 package interfaces;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import datastructures.Entity;
+import datastructures.Response;
 
 /**
  * Interface for performing CRUD operations on cloud database entities.
@@ -18,13 +18,13 @@ public interface IdbConnector {
 
     void init();
 
-    JsonNode getData(Entity request);
+    Response getData(Entity request);
 
-    JsonNode postData(Entity request);
+    Response postData(Entity request);
 
-    JsonNode createData(Entity request);
+    Response createData(Entity request);
 
-    JsonNode deleteData(Entity request);
+    Response deleteData(Entity request);
 
-    JsonNode updateData(Entity request);
+    Response updateData(Entity request);
 }

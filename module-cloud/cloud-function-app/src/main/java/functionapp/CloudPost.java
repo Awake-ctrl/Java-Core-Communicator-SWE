@@ -11,8 +11,6 @@ package functionapp;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpMethod;
 import com.microsoft.azure.functions.HttpRequestMessage;
@@ -21,7 +19,7 @@ import com.microsoft.azure.functions.annotation.AuthorizationLevel;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
 
-import cosmosoperations.CosmosOperations;
+import cosmosoperations.DbConnectorFactory;
 import datastructures.Entity;
 import datastructures.Response;
 import interfaces.IdbConnector;
@@ -49,11 +47,8 @@ public class CloudPost extends CloudHelper {
             final String jsonBody = request.getBody().orElse("");
             final Entity entityRequest = getObjectMapper().readValue(jsonBody, Entity.class);
 
-            final IdbConnector dbConnector = new CosmosOperations();
-            dbConnector.init();
-            final JsonNode data = dbConnector.postData(entityRequest);
-
-            final Response response = new Response(200, "success", NullNode.getInstance());
+            final IdbConnector dbConnector = DbConnectorFactory.getDbConnector();
+            final Response response = dbConnector.postData(entityRequest);
 
             return handleResponse(response, request);
 
