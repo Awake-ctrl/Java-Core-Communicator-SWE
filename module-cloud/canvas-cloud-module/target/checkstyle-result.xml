@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.3">
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\functionapps\CreateCanvas.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\functionapps\FetchCanvas.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\functionapps\UpdateCanvas.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\interfaces\ICanvasCloudService.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\models\CanvasCreateRequest.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\models\CanvasCreateResponse.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\models\CanvasFetchRequest.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\models\CanvasFetchResponse.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\models\CanvasUpdateRequest.java">
+</file>
+<file name="C:\Users\soory\Documents\IITPkd\Semester 7\SWE\GroupProject\Java-Core-Communicator-SWE\module-cloud\canvas-cloud-module\src\main\java\models\CanvasUpdateResponse.java">
+</file>
+</checkstyle>

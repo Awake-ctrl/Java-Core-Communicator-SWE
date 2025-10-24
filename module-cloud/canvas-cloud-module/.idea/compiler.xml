@@ -2,12 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-      </profile>
-      <profile name="Annotation profile for Java-Core-Communicator-SWE" enabled="true">
+      <profile name="Annotation profile for canvas-cloud-module" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -24,14 +19,8 @@
           <entry name="$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.9.0/byte-buddy-agent-1.9.0.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/objenesis/objenesis/2.6/objenesis-2.6.jar" />
         </processorPath>
-        <module name="chat-cloud-module" />
-        <module name="controller-cloud-module" />
         <module name="canvas-cloud-module" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Cloud-Java-App" target="17" />
-      <module name="PizzaBuilder_Software_122201017_IndividualProject" target="24" />
-    </bytecodeTargetLevel>
   </component>
 </project>

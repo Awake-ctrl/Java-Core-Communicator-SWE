@@ -1,0 +1,10 @@
+functionapps\FetchCanvas.class
+models\CanvasCreateResponse.class
+models\CanvasCreateRequest.class
+functionapps\UpdateCanvas.class
+models\CanvasFetchResponse.class
+models\CanvasUpdateResponse.class
+interfaces\ICanvasCloudService.class
+models\CanvasUpdateRequest.class
+functionapps\CreateCanvas.class
+models\CanvasFetchRequest.class
