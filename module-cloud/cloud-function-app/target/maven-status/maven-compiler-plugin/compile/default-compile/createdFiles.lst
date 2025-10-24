@@ -1,0 +1,12 @@
+datastructures\Entity.class
+datastructures\Response.class
+cosmosoperations\MockDbConnector.class
+functionapp\CloudPost.class
+cosmosoperations\DbConnectorFactory.class
+functionapp\CloudGet.class
+functionapp\CloudHelper.class
+datastructures\TimeRange.class
+functionapp\CloudDelete.class
+functionapp\CloudUpdate.class
+functionapp\CloudCreate.class
+interfaces\IdbConnector.class
