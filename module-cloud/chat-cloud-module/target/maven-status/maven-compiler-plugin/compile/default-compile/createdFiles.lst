@@ -1,8 +1,0 @@
-functionapps\LoadChat.class
-models\ChatLoadResponse.class
-models\ChatLoadRequest.class
-functionapps\NewChat.class
-models\ChatMessageDTO.class
-models\ChatNewRequest.class
-interfaces\IChatCloudService.class
-models\ChatNewResponse.class

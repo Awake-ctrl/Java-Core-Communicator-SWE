@@ -1,8 +1,0 @@
-models\LoginResponse.class
-models\OTPResponse.class
-models\RegisterRequest.class
-interfaces\IControllerCloudService.class
-models\LoginRequest.class
-models\OTPRequest.class
-functionapps\Register.class
-models\RegisterResponse.class
