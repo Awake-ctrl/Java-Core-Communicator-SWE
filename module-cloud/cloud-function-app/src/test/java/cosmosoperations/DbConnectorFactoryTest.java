@@ -14,6 +14,6 @@ class DbConnectorFactoryTest {
     @Test
     void getCosmoDbConnector() {
 //        assertInstanceOf(CosmosOperations.class, DbConnectorFactory.getDbConnector("cosmo"));
-        assertInstanceOf(MockDbConnector.class, DbConnectorFactory.getDbConnector("comso"));
+        assertInstanceOf(MockDbConnector.class, DbConnectorFactory.getDbConnector("cosmo"));
     }
 }

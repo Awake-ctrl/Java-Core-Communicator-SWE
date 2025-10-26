@@ -23,7 +23,7 @@ class CloudGetTest extends CloudTestBase {
 
     @Test
     void runCloudGetTest() throws Exception {
-        HttpRequestMessage<Optional<String>> request = mockRequest("{\"module\":\"mod\",\"table\":\"tab\",\"id\":\"123\"}");
+        HttpRequestMessage<Optional<String>> request = mockRequest("{\"module\":\"testModule\",\"table\":\"testTable\",\"id\":\"testId\"}");
         ExecutionContext context = mockContext();
 
         IdbConnector mockConnector = mock(IdbConnector.class);
