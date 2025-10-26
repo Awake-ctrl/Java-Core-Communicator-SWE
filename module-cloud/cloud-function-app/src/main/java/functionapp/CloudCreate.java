@@ -46,7 +46,7 @@ public class CloudCreate extends CloudHelper {
             final String jsonBody = request.getBody().orElse("");
             final Entity entityRequest = getObjectMapper().readValue(jsonBody, Entity.class);
 
-            final IdbConnector dbConnector = DbConnectorFactory.getDbConnector();
+            final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("mock");
             final Response response =  dbConnector.createData(entityRequest);
 
             return handleResponse(response, request);

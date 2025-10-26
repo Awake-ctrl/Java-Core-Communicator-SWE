@@ -10,6 +10,7 @@
 package cosmosoperations;
 
 import interfaces.IdbConnector;
+import java.util.Objects;
 
 /**
  * Factory class for creating and managing instances of {@link IdbConnector}.
@@ -24,11 +25,16 @@ public class DbConnectorFactory {
      * If the connector is not yet initialized, it creates a new one,
      * initializes it, and returns it.
      *
+     * @param provider Name of the database provider/platform.
      * @return The initialized {@link IdbConnector} instance.
      */
-    public static IdbConnector getDbConnector() {
+    public static IdbConnector getDbConnector(final String provider) {
         if (dbConnector == null) {
-            dbConnector = new MockDbConnector();
+            if (Objects.equals(provider, "cosmo")) {
+                dbConnector = new MockDbConnector();  // Change to CosmoDB Connector once implemented
+            } else {
+                dbConnector = new MockDbConnector();  // Default to mock dbConnector
+            }
             dbConnector.init();
         }
         return dbConnector;
