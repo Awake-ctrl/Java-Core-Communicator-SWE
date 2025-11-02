@@ -20,6 +20,8 @@ public class DbConnectorFactory {
     /** Singleton instance of the database connector. */
     private static IdbConnector dbConnector;
 
+    public DbConnectorFactory() { }
+
     /**
      * Returns a shared instance of the database connector.
      * If the connector is not yet initialized, it creates a new one,

@@ -25,7 +25,6 @@ class CloudHelperTest {
         return request;
     }
 
-    /** Normal success path */
     @Test
     void handleResponseTest() {
         HttpRequestMessage<Optional<String>> request = mockRequest();
@@ -37,27 +36,24 @@ class CloudHelperTest {
         assertEquals(HttpStatus.OK, response.getStatus());
     }
 
-//    /** Force exception inside handleResponse() */
-//    @Test
-//    void handleResponseExceptionTest() throws Exception {
-//        HttpRequestMessage<Optional<String>> request = mockRequest();
-//
-//        ObjectMapper mockMapper = mock(ObjectMapper.class);
-//        when(mockMapper.writeValueAsString(any())).thenThrow(new RuntimeException("forced exception"));
-//
-//        // Replace private objectMapper field using reflection
-//        Field f = CloudHelper.class.getDeclaredField("objectMapper");
-//        f.setAccessible(true);
-//        f.set(testHelper, mockMapper);
-//
-//        Response testResponse = new Response(200, "fail", null);
-//        HttpResponseMessage response = testHelper.handleResponse(testResponse, request);
-//
-//        assertNotNull(response);
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
-//    }
+    @Test
+    void handleResponseExceptionTest() throws Exception {
+        HttpRequestMessage<Optional<String>> request = mockRequest();
 
-    /** Normal BAD_REQUEST JSON path */
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        when(mockMapper.writeValueAsString(any())).thenThrow(new RuntimeException("forced exception"));
+
+        Field f = CloudHelper.class.getDeclaredField("objectMapper");
+        f.setAccessible(true);
+        f.set(testHelper, mockMapper);
+
+        Response testResponse = new Response(200, "fail", null);
+        HttpResponseMessage response = testHelper.handleResponse(testResponse, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
+    }
+
     @Test
     void handleErrorTest() {
         HttpRequestMessage<Optional<String>> request = mockRequest();
@@ -68,23 +64,21 @@ class CloudHelperTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
     }
 
-//    /** Force exception inside handleError() */
-//    @Test
-//    void handleErrorExceptionTest() throws Exception {
-//        HttpRequestMessage<Optional<String>> request = mockRequest();
-//
-//        ObjectMapper mockMapper = mock(ObjectMapper.class);
-//        when(mockMapper.writeValueAsString(any())).thenThrow(new RuntimeException("forced exception"));
-//
-//        // Replace private field again
-//        Field f = CloudHelper.class.getDeclaredField("objectMapper");
-//        f.setAccessible(true);
-//        f.set(testHelper, mockMapper);
-//
-//        HttpResponseMessage response = testHelper.handleError(request);
-//
-//        assertNotNull(response);
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
-//        assertTrue(response.getBody().toString().contains("Invalid request"));
-//    }
+    @Test
+    void handleErrorExceptionTest() throws Exception {
+        HttpRequestMessage<Optional<String>> request = mockRequest();
+
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        when(mockMapper.writeValueAsString(any())).thenThrow(new RuntimeException("forced exception"));
+
+        Field f = CloudHelper.class.getDeclaredField("objectMapper");
+        f.setAccessible(true);
+        f.set(testHelper, mockMapper);
+
+        HttpResponseMessage response = testHelper.handleError(request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
+        assertTrue(response.getBody().toString().contains("Invalid request"));
+    }
 }
