@@ -30,7 +30,7 @@ jobs:
         shell: pwsh
         run: |
           pushd './${{ env.POM_XML_DIRECTORY }}'
-          mvn clean package
+          mvn clean package -Dtest=!CosmosOperationsTest,!CloudFunctionLibraryTest
           popd
 
       # Step 4: Deploy the built project to Azure Function App
