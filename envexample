@@ -1,0 +1,3 @@
+COSMOS_ENDPOINT=<Cosmos endpoint URL>
+COSMOS_KEY=<Cosmos Key>
+COSMOS_DATABASE=<Database Name>
