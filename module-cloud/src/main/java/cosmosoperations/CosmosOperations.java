@@ -10,7 +10,6 @@ import com.azure.cosmos.models.CosmosItemRequestOptions;
 import com.azure.cosmos.models.CosmosItemResponse;
 import com.azure.cosmos.models.CosmosQueryRequestOptions;
 import com.azure.cosmos.models.PartitionKey;
-import com.azure.cosmos.models.ThroughputProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -199,10 +198,7 @@ public class CosmosOperations implements IdbConnector {
         final CosmosContainerProperties containerProperties =
                 new CosmosContainerProperties(tableName, "/id");
 
-        final ThroughputProperties throughputProperties =
-                ThroughputProperties.createManualThroughput(DEFAULT_THROUGHPUT);
-
-        database.createContainerIfNotExists(containerProperties, throughputProperties);
+        database.createContainerIfNotExists(containerProperties);
         return new Response(HTTP_OK, "Container '" + tableName + "' created successfully.", null);
     }
 

@@ -39,4 +39,12 @@ public class DbConnectorFactory {
         }
         return dbConnector;
     }
+
+    /**
+     * Resets the singleton instance.
+     * FOR TESTING PURPOSES ONLY.
+     */
+    public static void resetInstance() {
+        dbConnector = null;
+    }
 }

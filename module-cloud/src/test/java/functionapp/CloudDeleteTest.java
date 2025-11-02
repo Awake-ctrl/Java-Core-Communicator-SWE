@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpRequestMessage;
 import com.microsoft.azure.functions.HttpStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -20,6 +21,12 @@ import interfaces.IdbConnector;
 import java.util.Optional;
 
 class CloudDeleteTest extends CloudTestBase {
+    @BeforeEach
+    void resetFactory() {
+        // This clears the factory's singleton,
+        // forcing it to create a new MockDbConnector
+        DbConnectorFactory.resetInstance();
+    }
 
     @Test
     void runCloudDeleteTest() throws Exception {
@@ -30,7 +37,7 @@ class CloudDeleteTest extends CloudTestBase {
         Response mockResponse = new Response(200, "success", null);
 
         try (MockedStatic<DbConnectorFactory> factoryMock = Mockito.mockStatic(DbConnectorFactory.class)) {
-            factoryMock.when(() -> DbConnectorFactory.getDbConnector("mock")).thenReturn(mockConnector);
+            factoryMock.when(() -> DbConnectorFactory.getDbConnector(any())).thenReturn(mockConnector);
             when(mockConnector.deleteData(any(Entity.class))).thenReturn(mockResponse);
 
             CloudDelete cloudDelete = new CloudDelete();
