@@ -25,12 +25,23 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
 
+      - name: 'Create .env file for local Dotenv access'
+        shell: pwsh
+        run: |
+          $env_content = @"
+          COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}
+          COSMOS_KEY=${{ secrets.COSMOS_KEY }}
+          COSMOS_DATABASE=${{ secrets.COSMOS_DATABASE }}
+          CLOUD_BASE_URL=${{ secrets.CLOUD_BASE_URL }}
+          "@
+          $env_content | Out-File -FilePath './${{ env.POM_XML_DIRECTORY }}/.env' -Encoding utf8
+
       # Step 3: Build and package the project using Maven
       - name: 'Restore and Build with Maven'
         shell: pwsh
         run: |
           pushd './${{ env.POM_XML_DIRECTORY }}'
-          mvn clean package "-Dtest=!CosmosOperationsTest,!CloudFunctionLibraryTest"
+          mvn clean package
           popd
 
       # Step 4: Deploy the built project to Azure Function App
@@ -44,3 +55,8 @@ jobs:
           package: '${{ env.POM_XML_DIRECTORY }}/target/azure-functions/${{ env.AZURE_FUNCTIONAPP_NAME }}'
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
           respect-pom-xml: true
+          arguments: |
+            -DCOSMOS_ENDPOINT="${{ secrets.COSMOS_ENDPOINT }}" 
+            -DCOSMOS_KEY="${{ secrets.COSMOS_KEY }}" 
+            -DCOSMOS_DATABASE="${{ secrets.COSMOS_DATABASE }}"
+            -DCLOUD_BASE_URL="${{ secrets.CLOUD_BASE_URL }}"
