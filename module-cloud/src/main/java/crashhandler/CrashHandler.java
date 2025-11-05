@@ -36,6 +36,12 @@ public class CrashHandler implements ICrashHandler {
 
         final CloudFunctionLibrary cloudFunctionLibrary = new CloudFunctionLibrary();
 
+        try {
+            cloudFunctionLibrary.cloudCreate(new Entity(null, "ExceptionLogs", null, null, -1, null, null));
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
             final String exceptionName = exception.getClass().getName();
             final String timestamp = Instant.now().toString();
@@ -54,12 +60,14 @@ public class CrashHandler implements ICrashHandler {
                     null,
                     exceptionJsonNode
             );
-
-            try {
-                cloudFunctionLibrary.cloudPost(exceptionEntity);
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            System.out.println("Inside def...");
+            new Thread(() -> {
+                try {
+                    cloudFunctionLibrary.cloudPost(exceptionEntity);
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }, "WorkerThreadStoreException").start();
         });
     }
 
