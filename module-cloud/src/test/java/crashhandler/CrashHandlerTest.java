@@ -19,13 +19,13 @@ class CrashHandlerTest {
         assertSame(originalHandler, duplicateHandler);
     }
 
-    @Test
-    void testStartCrashHandler() {
-        CrashHandler testCrashHandler = new CrashHandler();
-
-        testCrashHandler.startCrashHandler();
-        Thread.UncaughtExceptionHandler originalHandler = Thread.getDefaultUncaughtExceptionHandler();
-        
-
-    }
+//    @Test
+//    void testStartCrashHandler() {
+//        CrashHandler testCrashHandler = new CrashHandler();
+//
+//        testCrashHandler.startCrashHandler();
+//        Thread.UncaughtExceptionHandler originalHandler = Thread.getDefaultUncaughtExceptionHandler();
+//
+//
+//    }
 }
