@@ -8,5 +8,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.16.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.16.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.16.2" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure.functions:azure-functions-java-core-library:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure.functions:azure-functions-java-library:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure.functions:azure-functions-java-library:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure.functions:azure-functions-java-library:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: io.github.cdimascio:dotenv-java:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.azure:azure-cosmos:4.74.0" level="project" />
   </component>
 </module>

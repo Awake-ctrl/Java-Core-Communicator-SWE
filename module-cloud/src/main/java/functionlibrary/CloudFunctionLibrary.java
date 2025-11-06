@@ -96,11 +96,11 @@ public class CloudFunctionLibrary {
             return objectMapper.writeValueAsBytes(response);
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             try {
                 final Response error = new Response(500, "FAILED: " + e.getMessage(), null);
-                error.setStatus("FAILED");
-                error.setMessage(e.getMessage());
+//                error.setStatus("FAILED");
+//                error.setMessage(e.getMessage());
                 return objectMapper.writeValueAsBytes(error);
             } catch (IOException ex) {
                 return new byte[0];

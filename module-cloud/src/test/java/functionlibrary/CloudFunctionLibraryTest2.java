@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class CloudFunctionLibraryTest2{
 
     public static void main(String[] args) throws Exception {
+        System.out.println("testing the file");
         CloudFunctionLibrary cloudLib = new CloudFunctionLibrary();
         ObjectMapper mapper = new ObjectMapper();
 
