@@ -39,30 +39,35 @@ public class CloudFunctionLibrary {
     /** Reference to the RPC instance (for subscription). */
     private AbstractRPC rpc;
 
-    /** Constructor: loads environment variables and initializes utilities. */
+    /**
+     * Constructor: loads environment variables and initializes utilities.
+     */
     public CloudFunctionLibrary() {
         final Dotenv dotenv = Dotenv.load();
-        baseUrl = dotenv.get("CLOUD_BASE_URL");
-        httpClient = HttpClient.newHttpClient();
-        objectMapper = new ObjectMapper();
+        this.baseUrl = dotenv.get("CLOUD_BASE_URL");
+        this.httpClient = HttpClient.newHttpClient();
+        this.objectMapper = new ObjectMapper();
     }
 
     // -----------------------------------------------------
     // 🔹 Initialize RPC Subscriptions
     // -----------------------------------------------------
+
     /**
-     * Initialize RPC and subscribe backend methods for remote calls.
+     * Initializes the RPC and subscribes backend methods for remote calls.
      * Each subscription maps an RPC call name to a handler that executes
      * the corresponding Azure Function API.
+     *
+     * @param rpcInstance the initialized RPC instance to bind to.
      */
-    public void init(AbstractRPC rpcInstance) {
+    public void init(final AbstractRPC rpcInstance) {
         this.rpc = rpcInstance;
 
         rpc.subscribe("cloudCreate", (byte[] data) -> handleRPCRequest("cloudcreate", "POST", data));
         rpc.subscribe("cloudDelete", (byte[] data) -> handleRPCRequest("clouddelete", "POST", data));
-        rpc.subscribe("cloudGet",    (byte[] data) -> handleRPCRequest("cloudget",    "POST", data));
-        rpc.subscribe("cloudPost",   (byte[] data) -> handleRPCRequest("cloudpost",   "POST", data));
-        rpc.subscribe("cloudUpdate", (byte[] data) -> handleRPCRequest("cloudupdate", "PUT",  data));
+        rpc.subscribe("cloudGet", (byte[] data) -> handleRPCRequest("cloudget", "POST", data));
+        rpc.subscribe("cloudPost", (byte[] data) -> handleRPCRequest("cloudpost", "POST", data));
+        rpc.subscribe("cloudUpdate", (byte[] data) -> handleRPCRequest("cloudupdate", "PUT", data));
 
         System.out.println("[CloudFunctionLibrary] RPC Handlers Initialized ✅");
     }
@@ -70,23 +75,30 @@ public class CloudFunctionLibrary {
     // -----------------------------------------------------
     // 🔹 Helper: Handle an incoming RPC call
     // -----------------------------------------------------
-    private byte[] handleRPCRequest(String endpoint, String method, byte[] data) {
+
+    /**
+     * Handles incoming RPC requests by deserializing data, invoking
+     * the corresponding Azure Function API, and returning the response.
+     *
+     * @param endpoint the Azure Function endpoint.
+     * @param method the HTTP method (POST/PUT).
+     * @param data the serialized Entity request as byte array.
+     * @return serialized Response as byte array.
+     */
+    private byte[] handleRPCRequest(final String endpoint, final String method, final byte[] data) {
         try {
-            // Deserialize incoming data
-            Entity request = objectMapper.readValue(data, Entity.class);
+            final Entity request = objectMapper.readValue(data, Entity.class);
 
-            // Make HTTP call to Azure Function
-            String payload = objectMapper.writeValueAsString(request);
-            String jsonResponse = callAPI("/" + endpoint, method, payload);
+            final String payload = objectMapper.writeValueAsString(request);
+            final String jsonResponse = callAPI("/" + endpoint, method, payload);
 
-            // Deserialize response and send back
-            Response response = objectMapper.readValue(jsonResponse, Response.class);
+            final Response response = objectMapper.readValue(jsonResponse, Response.class);
             return objectMapper.writeValueAsBytes(response);
 
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                Response error = new Response();
+                final Response error = new Response();
                 error.setStatus("FAILED");
                 error.setMessage(e.getMessage());
                 return objectMapper.writeValueAsBytes(error);
@@ -99,6 +111,17 @@ public class CloudFunctionLibrary {
     // -----------------------------------------------------
     // 🔹 Core Azure HTTP Caller
     // -----------------------------------------------------
+
+    /**
+     * Makes a REST API call to the Azure Function backend.
+     *
+     * @param api the API endpoint path (e.g., "/cloudcreate").
+     * @param method the HTTP method (POST or PUT).
+     * @param payload the JSON payload to send.
+     * @return raw JSON response as string.
+     * @throws IOException if network or serialization fails.
+     * @throws InterruptedException if the request is interrupted.
+     */
     private String callAPI(final String api, final String method, final String payload)
             throws IOException, InterruptedException {
 
@@ -126,32 +149,71 @@ public class CloudFunctionLibrary {
     // -----------------------------------------------------
     // 🔹 Direct Backend Methods (No RPC)
     // -----------------------------------------------------
-    // These can be used by other backend modules without RPC calls.
 
+    /**
+     * Calls the Azure cloudCreate endpoint directly (no RPC).
+     *
+     * @param request the Entity request object.
+     * @return deserialized Response object.
+     * @throws IOException if network or JSON serialization fails.
+     * @throws InterruptedException if the request is interrupted.
+     */
     public Response cloudCreate(final Entity request) throws IOException, InterruptedException {
         final String payload = objectMapper.writeValueAsString(request);
         final String jsonResponse = callAPI("/cloudcreate", "POST", payload);
         return objectMapper.readValue(jsonResponse, Response.class);
     }
 
+    /**
+     * Calls the Azure cloudDelete endpoint directly (no RPC).
+     *
+     * @param request the Entity request object.
+     * @return deserialized Response object.
+     * @throws IOException if network or JSON serialization fails.
+     * @throws InterruptedException if the request is interrupted.
+     */
     public Response cloudDelete(final Entity request) throws IOException, InterruptedException {
         final String payload = objectMapper.writeValueAsString(request);
         final String jsonResponse = callAPI("/clouddelete", "POST", payload);
         return objectMapper.readValue(jsonResponse, Response.class);
     }
 
+    /**
+     * Calls the Azure cloudGet endpoint directly (no RPC).
+     *
+     * @param request the Entity request object.
+     * @return deserialized Response object.
+     * @throws IOException if network or JSON serialization fails.
+     * @throws InterruptedException if the request is interrupted.
+     */
     public Response cloudGet(final Entity request) throws IOException, InterruptedException {
         final String payload = objectMapper.writeValueAsString(request);
         final String jsonResponse = callAPI("/cloudget", "POST", payload);
         return objectMapper.readValue(jsonResponse, Response.class);
     }
 
+    /**
+     * Calls the Azure cloudPost endpoint directly (no RPC).
+     *
+     * @param request the Entity request object.
+     * @return deserialized Response object.
+     * @throws IOException if network or JSON serialization fails.
+     * @throws InterruptedException if the request is interrupted.
+     */
     public Response cloudPost(final Entity request) throws IOException, InterruptedException {
         final String payload = objectMapper.writeValueAsString(request);
         final String jsonResponse = callAPI("/cloudpost", "POST", payload);
         return objectMapper.readValue(jsonResponse, Response.class);
     }
 
+    /**
+     * Calls the Azure cloudUpdate endpoint directly (no RPC).
+     *
+     * @param request the Entity request object.
+     * @return deserialized Response object.
+     * @throws IOException if network or JSON serialization fails.
+     * @throws InterruptedException if the request is interrupted.
+     */
     public Response cloudUpdate(final Entity request) throws IOException, InterruptedException {
         final String payload = objectMapper.writeValueAsString(request);
         final String jsonResponse = callAPI("/cloudupdate", "PUT", payload);
