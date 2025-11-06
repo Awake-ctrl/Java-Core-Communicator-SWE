@@ -129,7 +129,7 @@ public class CosmosOperations implements IdbConnector {
 
         List<JsonNode> results = container.queryItems(query, new CosmosQueryRequestOptions(), JsonNode.class)
                 .stream()
-                .sorted((a, b) -> Long.compare(b.path("timestamp").asLong(), a.path("timestamp").asLong()))
+                .sorted((a, b) -> Double.compare(b.path("timestamp").asDouble(), a.path("timestamp").asDouble()))
                 .collect(Collectors.toList());
 
         if (request.lastN() > 0 && results.size() > request.lastN()) {
@@ -172,7 +172,7 @@ public class CosmosOperations implements IdbConnector {
         final ObjectNode document = mapper.createObjectNode();
 
         document.put("id", request.id());
-        document.put("timestamp", System.currentTimeMillis());
+        document.put("timestamp", (double) System.currentTimeMillis());
         document.set("data", request.data());
 
         container.createItem(document);
@@ -233,7 +233,7 @@ public class CosmosOperations implements IdbConnector {
 
         final ObjectNode document = mapper.createObjectNode();
         document.put("id", request.id());
-        document.put("timestamp", System.currentTimeMillis());
+        document.put("timestamp", (double) System.currentTimeMillis());
         document.set("data", updatedData);
 
         container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
