@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import datastructures.Entity;
 import datastructures.Response;
+import datastructures.TimeRange;
 import interfaces.IdbConnector;
 import org.junit.jupiter.api.*;
 
@@ -149,5 +150,84 @@ class CosmosOperationsTest {
         assertEquals(200, response.status_code());
         assertEquals("Document updated successfully.", response.message());
         assertNull(response.data(), "Update operation should return null data");
+    }
+
+    @Test
+    void getDataTest_FetchById_WithType() {
+        Entity entityWithType = new Entity(
+                testEntity.module(),
+                testEntity.table(),
+                testEntity.id(),
+                "data1",
+                -1,
+                null,
+                null
+        );
+
+        Response response = cosmosDbConnector.getData(entityWithType);
+        assertEquals(200, response.status_code());
+        assertEquals(0, response.data().asInt());
+    }
+
+    @Test
+    void getDataTest_FetchAll_NoId() {
+        Entity fetchAllEntity = new Entity(
+                testEntity.module(),
+                testEntity.table(),
+                null,
+                null, -1, null, null
+        );
+
+        Response response = cosmosDbConnector.getData(fetchAllEntity);
+        assertEquals(200, response.status_code());
+        assertTrue(response.data().isArray());
+        assertEquals(1, response.data().size());
+        assertEquals(testEntity.id(), response.data().get(0).path("id").asText());
+    }
+
+    @Test
+    void getDataTest_FetchAll_WithTimeRange() {
+        Entity fetchAllEntity = new Entity(
+                testEntity.module(), testEntity.table(),
+                null, null, -1, null, null
+        );
+        Response getResponse = cosmosDbConnector.getData(fetchAllEntity);
+        double timestamp = getResponse.data().get(0).path("timestamp").asDouble();
+
+        TimeRange timeRange = new TimeRange(timestamp - 10000.0f, timestamp + 10000.0f);
+
+        Entity queryEntity = new Entity(
+                testEntity.module(), testEntity.table(),
+                null, null, -1, timeRange, null
+        );
+
+        Response queryResponse = cosmosDbConnector.getData(queryEntity);
+        assertEquals(200, queryResponse.status_code());
+        assertTrue(queryResponse.data().isArray());
+        assertEquals(1, queryResponse.data().size());
+    }
+
+    @Test
+    void getDataTest_FetchAll_WithLastNAndType() throws InterruptedException {
+        Thread.sleep(10);
+        ObjectNode dataNode2 = mapper.createObjectNode().put("data1", 100);
+        Entity testEntity2 = new Entity(
+                testEntity.module(), "TestTable", "TestId2",
+                null, -1, null, dataNode2
+        );
+        cosmosDbConnector.postData(testEntity2);
+
+        Entity fetchAllEntity = new Entity(
+                testEntity.module(), testEntity.table(),
+                null, "data1", 1, null, null
+        );
+
+        Response response = cosmosDbConnector.getData(fetchAllEntity);
+        assertEquals(200, response.status_code());
+        assertTrue(response.data().isArray());
+        assertEquals(1, response.data().size());
+        assertEquals(100, response.data().get(0).asInt());
+
+        cosmosDbConnector.deleteData(testEntity2);
     }
 }

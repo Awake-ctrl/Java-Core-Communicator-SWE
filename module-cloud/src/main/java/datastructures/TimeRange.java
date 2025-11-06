@@ -8,5 +8,5 @@
 
 package datastructures;
 
-public record TimeRange(float fromTime, float toTime) {
+public record TimeRange(double fromTime, double toTime) {
 }
