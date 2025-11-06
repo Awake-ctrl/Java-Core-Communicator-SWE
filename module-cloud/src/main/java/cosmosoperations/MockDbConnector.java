@@ -53,6 +53,7 @@ public class MockDbConnector implements IdbConnector {
     /** Mock CREATE operation. */
     @Override
     public Response createData(final Entity request) {
+
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode jsonData = mapper.createObjectNode();
 

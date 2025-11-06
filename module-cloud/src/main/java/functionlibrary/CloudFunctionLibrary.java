@@ -98,7 +98,7 @@ public class CloudFunctionLibrary {
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                final Response error = new Response();
+                final Response error = new Response(500, "FAILED: " + e.getMessage(), null);
                 error.setStatus("FAILED");
                 error.setMessage(e.getMessage());
                 return objectMapper.writeValueAsBytes(error);
