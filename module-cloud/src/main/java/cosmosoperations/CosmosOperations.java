@@ -59,9 +59,22 @@ public class CosmosOperations implements IdbConnector {
     public void init() {
         try {
             final Dotenv dotenv = Dotenv.load();
+
             endpoint = dotenv.get("COSMOS_ENDPOINT");
+            if (endpoint == null) {
+                endpoint = System.getenv("COSMOS_ENDPOINT");
+            }
+
             key = dotenv.get("COSMOS_KEY");
+            if (key == null) {
+                key = System.getenv("COSMOS_KEY");
+            }
+
             databaseName = dotenv.get("COSMOS_DATABASE");
+            if (databaseName == null) {
+                databaseName = System.getenv("COSMOS_DATABASE");
+            }
+
 
             client = new CosmosClientBuilder()
                     .endpoint(endpoint)

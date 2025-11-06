@@ -26,7 +26,7 @@ import java.net.http.HttpResponse;
 public class CloudFunctionLibrary {
 
     /** Base URL of the Cloud Functions. */
-    private final String baseUrl;
+    private String baseUrl;
 
     /** HTTP client for requests. */
     private final HttpClient httpClient;
@@ -36,8 +36,11 @@ public class CloudFunctionLibrary {
 
     /** Constructor loads base URL from .env and initializes client/mapper. */
     public CloudFunctionLibrary() {
-        final Dotenv dotenv = Dotenv.load();
-        baseUrl = dotenv.get("CLOUD_BASE_URL");
+        baseUrl = System.getenv("CLOUD_BASE_URL");
+        if (baseUrl == null || baseUrl.isEmpty()) {
+            final Dotenv dotenv = Dotenv.load();
+            baseUrl = dotenv.get("CLOUD_BASE_URL");
+        }
         httpClient = HttpClient.newHttpClient();
         objectMapper = new ObjectMapper();
     }

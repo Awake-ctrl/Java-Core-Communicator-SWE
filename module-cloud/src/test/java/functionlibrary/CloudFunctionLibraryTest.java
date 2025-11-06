@@ -15,7 +15,8 @@ class CloudFunctionLibraryTest {
     @Test
     void cloudCreateTest() throws IOException, InterruptedException {
         Entity testEntity = new Entity("TestModule", "TestTable", "TestId", null, -1, new TimeRange(0, 0), null);
-        assertInstanceOf(Record.class, testCloudFunctionLibrary.cloudCreate(testEntity));
+        Record record = testCloudFunctionLibrary.cloudCreate(testEntity);
+        assertInstanceOf(Record.class, record);
     }
 
     @Test
