@@ -48,10 +48,10 @@ public class CloudDelete extends CloudHelper {
             final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("cosmo");
             final Response response = dbConnector.deleteData(entityRequest);
 
-            return handleResponse(response, request);
+            return handleResponse(response, request, context);
 
         } catch (Exception e) {
-            return handleError(request);
+            return handleError(request, context);
         }
     }
 }

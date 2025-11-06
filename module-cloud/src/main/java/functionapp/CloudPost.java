@@ -50,10 +50,10 @@ public class CloudPost extends CloudHelper {
             final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("cosmo");
             final Response response = dbConnector.postData(entityRequest);
 
-            return handleResponse(response, request);
+            return handleResponse(response, request, context);
 
         } catch (Exception e) {
-            return handleError(request);
+            return handleError(request, context);
         }
     }
 }
