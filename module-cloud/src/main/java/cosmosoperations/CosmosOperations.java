@@ -58,23 +58,24 @@ public class CosmosOperations implements IdbConnector {
     @Override
     public void init() {
         try {
-            final Dotenv dotenv = Dotenv.load();
+            endpoint = System.getenv("COSMOS_ENDPOINT");
+            key = System.getenv("COSMOS_KEY");
+            databaseName = System.getenv("COSMOS_DATABASE");
 
-            endpoint = dotenv.get("COSMOS_ENDPOINT");
-            if (endpoint == null) {
-                endpoint = System.getenv("COSMOS_ENDPOINT");
+            // Fallback to Dotenv for local testing if variables are null
+            if (endpoint == null || key == null || databaseName == null) {
+                System.out.println("Warning: Environment variables not found. Falling back to .env file...");
+                final Dotenv dotenv = Dotenv.load();
+                if (endpoint == null) {
+                    endpoint = dotenv.get("COSMOS_ENDPOINT");
+                }
+                if (key == null) {
+                    key = dotenv.get("COSMOS_KEY");
+                }
+                if (databaseName == null) {
+                    databaseName = dotenv.get("COSMOS_DATABASE");
+                }
             }
-
-            key = dotenv.get("COSMOS_KEY");
-            if (key == null) {
-                key = System.getenv("COSMOS_KEY");
-            }
-
-            databaseName = dotenv.get("COSMOS_DATABASE");
-            if (databaseName == null) {
-                databaseName = System.getenv("COSMOS_DATABASE");
-            }
-
 
             client = new CosmosClientBuilder()
                     .endpoint(endpoint)
