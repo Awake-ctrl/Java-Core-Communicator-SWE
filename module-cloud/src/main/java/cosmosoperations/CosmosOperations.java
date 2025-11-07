@@ -1,6 +1,7 @@
 package cosmosoperations;
 
 import com.azure.cosmos.ConsistencyLevel;
+import com.azure.cosmos.CosmosException;
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.CosmosContainer;
@@ -49,8 +50,11 @@ public class CosmosOperations implements IdbConnector {
     /** Success status code constant. */
     private static final int HTTP_OK = 200;
 
-    /** Default throughput value for new containers. */
-    private static final int DEFAULT_THROUGHPUT = 400;
+    /** Conflict status code constant. */
+    private static final int HTTP_CONFLICT = 409;
+
+    /** Bad request status code constant. */
+    private static final int HTTP_BAD_REQUEST = 400;
 
     /**
      * Initializes the Cosmos client using credentials from the .env file.
@@ -189,8 +193,15 @@ public class CosmosOperations implements IdbConnector {
         document.put("timestamp", (double) System.currentTimeMillis());
         document.set("data", request.data());
 
-        container.createItem(document);
-        return new Response(HTTP_OK, "Document inserted successfully.", null);
+        try {
+            container.createItem(document);
+            return new Response(HTTP_OK, "Document inserted successfully.", null);
+        } catch (CosmosException e) {
+            if (e.getStatusCode() == HTTP_CONFLICT) {
+                return new Response(HTTP_CONFLICT, "Document with ID '" + request.id() + "' already exists.", null);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -226,13 +237,30 @@ public class CosmosOperations implements IdbConnector {
         final String tableName = request.module() + "_" + request.table();
         final CosmosContainer container = database.getContainer(tableName);
 
-        if (request.id() == null || request.id().isEmpty()) {
-            container.delete();
-            return new Response(HTTP_OK, "Container '" + tableName + "' deleted successfully.", null);
+        // Case 1: Delete specific field if both ID and Type are present
+        if (hasId(request) && request.type() != null && !request.type().isEmpty()) {
+            final CosmosItemResponse<ObjectNode> response = container.readItem(request.id(), new PartitionKey(request.id()), ObjectNode.class);
+            final ObjectNode document = response.getItem();
+
+            final JsonNode dataNode = document.get("data");
+            if (dataNode != null && dataNode.isObject()) {
+                ((ObjectNode) dataNode).remove(request.type());
+                document.put("timestamp", (double) System.currentTimeMillis());
+                container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
+                return new Response(HTTP_OK, "Field '" + request.type() + "' deleted successfully.", null);
+            }
+            return new Response(HTTP_OK, "Field '" + request.type() + "' not found.", null);
         }
 
-        container.deleteItem(request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
-        return new Response(HTTP_OK, "Document deleted successfully.", null);
+        // Case 2: Delete entire document if ID is present but Type is NOT
+        if (hasId(request)) {
+            container.deleteItem(request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
+            return new Response(HTTP_OK, "Document deleted successfully.", null);
+        }
+
+        // Case 3: Delete entire container if ID is missing
+        container.delete();
+        return new Response(HTTP_OK, "Container '" + tableName + "' deleted successfully.", null);
     }
 
     /**
@@ -243,12 +271,35 @@ public class CosmosOperations implements IdbConnector {
     @Override
     public Response updateData(final Entity request) {
         final CosmosContainer container = database.getContainer(request.module() + "_" + request.table());
-        final JsonNode updatedData = request.data();
+
+        if (request.type() != null && !request.type().isEmpty()) {
+            final CosmosItemResponse<ObjectNode> response = container.readItem(request.id(), new PartitionKey(request.id()), ObjectNode.class);
+            final ObjectNode document = response.getItem();
+
+            JsonNode dataNode = document.get("data");
+            if (dataNode == null || !dataNode.isObject()) {
+                dataNode = mapper.createObjectNode();
+                document.set("data", dataNode);
+            }
+
+            final JsonNode newValue = request.data().get(request.type());
+
+            if (newValue == null) {
+                return new Response(HTTP_BAD_REQUEST, "New value was not provided for data to be updated: "
+                        + request.type(), null);
+            }
+
+            ((ObjectNode) dataNode).set(request.type(), newValue);
+            document.put("timestamp", (double) System.currentTimeMillis());
+
+            container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
+            return new Response(HTTP_OK, "Field '" + request.type() + "' updated successfully.", null);
+        }
 
         final ObjectNode document = mapper.createObjectNode();
         document.put("id", request.id());
         document.put("timestamp", (double) System.currentTimeMillis());
-        document.set("data", updatedData);
+        document.set("data", request.data());
 
         container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
         return new Response(HTTP_OK, "Document updated successfully.", null);

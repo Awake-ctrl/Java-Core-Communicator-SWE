@@ -1,6 +1,8 @@
 package cosmosoperations;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import datastructures.Entity;
 import datastructures.Response;
@@ -81,6 +83,15 @@ class CosmosOperationsTest {
     }
 
     @Test
+    void postData_ConflictTest() {
+        Response response = cosmosDbConnector.postData(testEntity);
+
+        assertEquals(409, response.status_code());
+        assertTrue(response.message().contains("already exists"),
+                "Expected conflict message for duplicate ID");
+    }
+
+    @Test
     void postDataTest() {
         cosmosDbConnector.deleteData(testEntity);
 
@@ -113,6 +124,23 @@ class CosmosOperationsTest {
                 response.message().contains("deleted successfully"),
                 "Expected deletion success message"
         );
+    }
+
+    @Test
+    void deleteData_SpecificFieldTest() {
+        Entity deleteFieldEntity = new Entity(
+                testEntity.module(), testEntity.table(), testEntity.id(),
+                "data1", -1, null, null
+        );
+        Response deleteResponse = cosmosDbConnector.deleteData(deleteFieldEntity);
+        assertEquals(200, deleteResponse.status_code());
+        assertTrue(deleteResponse.message().contains("Field 'data1' deleted"));
+
+        Response getResponse = cosmosDbConnector.getData(testEntity);
+        JsonNode fetchedData = getResponse.data().get("data");
+
+        assertFalse(fetchedData.has("data1"), "Field 'data1' should have been deleted");
+        assertTrue(fetchedData.has("data2"), "Field 'data2' should still exist");
     }
 
     @Test
@@ -150,6 +178,44 @@ class CosmosOperationsTest {
         assertEquals(200, response.status_code());
         assertEquals("Document updated successfully.", response.message());
         assertNull(response.data(), "Update operation should return null data");
+    }
+
+    @Test
+    void updateData_SpecificFieldTest() {
+        ObjectNode dataWrapper = mapper.createObjectNode();
+        dataWrapper.put("data1", 999);
+
+        Entity updateFieldEntity = new Entity(
+                testEntity.module(), testEntity.table(), testEntity.id(),
+                "data1", -1, null, dataWrapper
+        );
+        Response updateResponse = cosmosDbConnector.updateData(updateFieldEntity);
+        assertEquals(200, updateResponse.status_code());
+
+        Response getResponse = cosmosDbConnector.getData(testEntity);
+        JsonNode fetchedData = getResponse.data().get("data");
+
+        assertEquals(999, fetchedData.get("data1").asInt());
+        assertEquals(1, fetchedData.get("data2").asInt());
+    }
+
+    @Test
+    void updateData_AddNewFieldTest() {
+        ObjectNode dataWrapper = mapper.createObjectNode();
+        dataWrapper.put("data3", 888);
+
+        Entity updateNewFieldEntity = new Entity(
+                testEntity.module(), testEntity.table(), testEntity.id(),
+                "data3", -1, null, dataWrapper
+        );
+        Response updateResponse = cosmosDbConnector.updateData(updateNewFieldEntity);
+        assertEquals(200, updateResponse.status_code());
+
+        Response getResponse = cosmosDbConnector.getData(testEntity);
+        JsonNode fetchedData = getResponse.data().get("data");
+
+        assertTrue(fetchedData.has("data3"));
+        assertEquals(888, fetchedData.get("data3").asInt());
     }
 
     @Test
