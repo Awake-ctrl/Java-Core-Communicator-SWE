@@ -47,15 +47,15 @@ public class CloudCreate extends CloudHelper {
             final Entity entityRequest = getObjectMapper().readValue(jsonBody, Entity.class);
 
             final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("cosmo");
-            context.getLogger().info("Got Connector");
+            context.getLogger().info("Initialized DB Connector");
             final Response response =  dbConnector.createData(entityRequest);
-            context.getLogger().info("Got Response");
+            context.getLogger().info("Received Create Response: [" + response.status_code() + "] " + response.message());
 
-            return handleResponse(response, request, context);
+            return handleResponse(response, request);
 
         } catch (Exception e) {
-            context.getLogger().info("Got into exception" + e.getMessage());
-            return handleError(request, context);
+            context.getLogger().info("[ERROR] Exception in CloudCreate: " + e.getMessage());
+            return handleError(request);
         }
     }
 }

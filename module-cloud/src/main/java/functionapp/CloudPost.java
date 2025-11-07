@@ -48,12 +48,15 @@ public class CloudPost extends CloudHelper {
             final Entity entityRequest = getObjectMapper().readValue(jsonBody, Entity.class);
 
             final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("cosmo");
+            context.getLogger().info("Initialized DB Connector");
             final Response response = dbConnector.postData(entityRequest);
+            context.getLogger().info("Received Post Response: [" + response.status_code() + "] " + response.message());
 
-            return handleResponse(response, request, context);
+            return handleResponse(response, request);
 
         } catch (Exception e) {
-            return handleError(request, context);
+            context.getLogger().info("[ERROR] Exception in CloudPost: " + e.getMessage());
+            return handleError(request);
         }
     }
 }
