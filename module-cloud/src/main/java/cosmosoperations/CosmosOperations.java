@@ -53,6 +53,9 @@ public class CosmosOperations implements IdbConnector {
     /** Conflict status code constant. */
     private static final int HTTP_CONFLICT = 409;
 
+    /** Not found status code constant. */
+    private static final int HTTP_NOT_FOUND = 404;
+
     /** Bad request status code constant. */
     private static final int HTTP_BAD_REQUEST = 400;
 
@@ -124,16 +127,26 @@ public class CosmosOperations implements IdbConnector {
      * @return Response with the document or specific field.
      */
     private Response fetchById(final CosmosContainer container, final Entity request) {
-        final CosmosItemResponse<JsonNode> itemResponse =
-                container.readItem(request.id(), new PartitionKey(request.id()), JsonNode.class);
-        final JsonNode doc = itemResponse.getItem();
+        try {
+            final CosmosItemResponse<JsonNode> itemResponse =
+                    container.readItem(request.id(), new PartitionKey(request.id()), JsonNode.class);
+            final JsonNode doc = itemResponse.getItem();
 
-        if (request.type() != null && !request.type().isEmpty()) {
-            final JsonNode data = doc.path("data").path(request.type());
-            return new Response(HTTP_OK, "Field retrieved successfully.", data);
+            if (request.type() != null && !request.type().isEmpty()) {
+                final JsonNode data = doc.path("data").path(request.type());
+                if (data.isMissingNode()) {
+                    return new Response(HTTP_NOT_FOUND, "Field '" + request.type() + "' not found.", null);
+                }
+                return new Response(HTTP_OK, "Field retrieved successfully.", data);
+            }
+
+            return new Response(HTTP_OK, "Document retrieved successfully.", doc);
+        } catch (CosmosException e) {
+            if (e.getStatusCode() == HTTP_NOT_FOUND) {
+                return new Response(HTTP_NOT_FOUND, "Document with ID '" + request.id() + "' not found.", null);
+            }
+            throw e;
         }
-
-        return new Response(HTTP_OK, "Document retrieved successfully.", doc);
     }
 
     /**
