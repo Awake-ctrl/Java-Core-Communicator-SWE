@@ -10,7 +10,6 @@ package functionapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
-import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpRequestMessage;
 import com.microsoft.azure.functions.HttpResponseMessage;
 import com.microsoft.azure.functions.HttpStatus;
@@ -32,32 +31,28 @@ public class CloudHelper {
         return objectMapper;
     }
 
-    protected HttpResponseMessage handleError(final HttpRequestMessage<Optional<String>> request, final ExecutionContext context) {
+    protected HttpResponseMessage handleError(final HttpRequestMessage<Optional<String>> request) {
         final Response errorResponse = new Response(400, "bad request", NullNode.getInstance());
         try {
-            context.getLogger().info("Error in try itself. Means that something in the app crashed.");
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                     .body(objectMapper.writeValueAsString(errorResponse))
                     .header("Content-Type", "application/json")
                     .build();
         } catch (Exception ex) {
-            context.getLogger().info(ex.getMessage());
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                     .body("Invalid request")
                     .build();
         }
     }
 
-    protected HttpResponseMessage handleResponse(final Response response, final HttpRequestMessage<Optional<String>> request, final ExecutionContext context) {
-        System.out.print("GOT INTO HELPER");
+    protected HttpResponseMessage handleResponse(final Response response, final HttpRequestMessage<Optional<String>> request) {
         try {
             return request.createResponseBuilder(HttpStatus.OK)
                     .body(objectMapper.writeValueAsString(response))
                     .header("Content-Type", "application/json")
                     .build();
         } catch (Exception e) {
-            context.getLogger().info(e.getMessage());
-            return handleError(request, context);
+            return handleError(request);
         }
     }
 }
