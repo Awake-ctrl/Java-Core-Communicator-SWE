@@ -14,8 +14,8 @@ import com.azure.cosmos.models.PartitionKey;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import datastructures.CloudResponse;
 import datastructures.Entity;
-import datastructures.Response;
 import interfaces.IdbConnector;
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -100,10 +100,10 @@ public class CosmosOperations implements IdbConnector {
     /**
      * Retrieves data from a specified container.
      * @param request The entity containing the query details.
-     * @return A Response containing matching documents or fields.
+     * @return A CloudResponse containing matching documents or fields.
      */
     @Override
-    public Response getData(final Entity request) {
+    public CloudResponse getData(final Entity request) {
         final CosmosContainer container = database.getContainer(request.module() + "_" + request.table());
         if (hasId(request)) {
             return fetchById(container, request);
@@ -124,9 +124,9 @@ public class CosmosOperations implements IdbConnector {
      * Fetches a single document by its ID.
      * @param container The Cosmos container.
      * @param request The entity containing ID and type.
-     * @return Response with the document or specific field.
+     * @return CloudResponse with the document or specific field.
      */
-    private Response fetchById(final CosmosContainer container, final Entity request) {
+    private CloudResponse fetchById(final CosmosContainer container, final Entity request) {
         try {
             final CosmosItemResponse<JsonNode> itemResponse =
                     container.readItem(request.id(), new PartitionKey(request.id()), JsonNode.class);
@@ -135,15 +135,15 @@ public class CosmosOperations implements IdbConnector {
             if (request.type() != null && !request.type().isEmpty()) {
                 final JsonNode data = doc.path("data").path(request.type());
                 if (data.isMissingNode()) {
-                    return new Response(HTTP_NOT_FOUND, "Field '" + request.type() + "' not found.", null);
+                    return new CloudResponse(HTTP_NOT_FOUND, "Field '" + request.type() + "' not found.", null);
                 }
-                return new Response(HTTP_OK, "Field retrieved successfully.", data);
+                return new CloudResponse(HTTP_OK, "Field retrieved successfully.", data);
             }
 
-            return new Response(HTTP_OK, "Document retrieved successfully.", doc);
+            return new CloudResponse(HTTP_OK, "Document retrieved successfully.", doc);
         } catch (CosmosException e) {
             if (e.getStatusCode() == HTTP_NOT_FOUND) {
-                return new Response(HTTP_NOT_FOUND, "Document with ID '" + request.id() + "' not found.", null);
+                return new CloudResponse(HTTP_NOT_FOUND, "Document with ID '" + request.id() + "' not found.", null);
             }
             throw e;
         }
@@ -153,9 +153,9 @@ public class CosmosOperations implements IdbConnector {
      * Fetches multiple documents with optional filters.
      * @param container The Cosmos container.
      * @param request The entity with query parameters.
-     * @return Response with list of retrieved documents.
+     * @return CloudResponse with list of retrieved documents.
      */
-    private Response fetchAll(final CosmosContainer container, final Entity request) {
+    private CloudResponse fetchAll(final CosmosContainer container, final Entity request) {
         final String query = buildQuery(request);
 
         List<JsonNode> results = container.queryItems(query, new CosmosQueryRequestOptions(), JsonNode.class)
@@ -173,7 +173,7 @@ public class CosmosOperations implements IdbConnector {
                     .collect(Collectors.toList());
         }
 
-        return new Response(HTTP_OK, "Documents retrieved successfully.", mapper.valueToTree(results));
+        return new CloudResponse(HTTP_OK, "Documents retrieved successfully.", mapper.valueToTree(results));
     }
 
     /**
@@ -195,10 +195,10 @@ public class CosmosOperations implements IdbConnector {
     /**
      * Inserts a new document into the container.
      * @param request The entity containing the data to insert.
-     * @return Response indicating insertion status.
+     * @return CloudResponse indicating insertion status.
      */
     @Override
-    public Response postData(final Entity request) {
+    public CloudResponse postData(final Entity request) {
         final CosmosContainer container = database.getContainer(request.module() + "_" + request.table());
         final ObjectNode document = mapper.createObjectNode();
 
@@ -208,10 +208,10 @@ public class CosmosOperations implements IdbConnector {
 
         try {
             container.createItem(document);
-            return new Response(HTTP_OK, "Document inserted successfully.", null);
+            return new CloudResponse(HTTP_OK, "Document inserted successfully.", null);
         } catch (CosmosException e) {
             if (e.getStatusCode() == HTTP_CONFLICT) {
-                return new Response(HTTP_CONFLICT, "Document with ID '" + request.id() + "' already exists.", null);
+                return new CloudResponse(HTTP_CONFLICT, "Document with ID '" + request.id() + "' already exists.", null);
             }
             throw e;
         }
@@ -220,33 +220,33 @@ public class CosmosOperations implements IdbConnector {
     /**
      * Creates a new container if it doesn't exist.
      * @param request The entity specifying the table name.
-     * @return Response indicating creation status.
+     * @return CloudResponse indicating creation status.
      */
     @Override
-    public Response createData(final Entity request) {
+    public CloudResponse createData(final Entity request) {
         final String tableName = request.module() + "_" + request.table();
         final boolean exists = database.readAllContainers()
                 .stream()
                 .anyMatch(c -> c.getId().equals(tableName));
 
         if (exists) {
-            return new Response(HTTP_OK, "Container '" + tableName + "' already exists.", null);
+            return new CloudResponse(HTTP_OK, "Container '" + tableName + "' already exists.", null);
         }
 
         final CosmosContainerProperties containerProperties =
                 new CosmosContainerProperties(tableName, "/id");
 
         database.createContainerIfNotExists(containerProperties);
-        return new Response(HTTP_OK, "Container '" + tableName + "' created successfully.", null);
+        return new CloudResponse(HTTP_OK, "Container '" + tableName + "' created successfully.", null);
     }
 
     /**
      * Deletes a specific document or an entire container.
      * @param request The entity containing table and optional ID.
-     * @return Response indicating deletion result.
+     * @return CloudResponse indicating deletion result.
      */
     @Override
-    public Response deleteData(final Entity request) {
+    public CloudResponse deleteData(final Entity request) {
         final String tableName = request.module() + "_" + request.table();
         final CosmosContainer container = database.getContainer(tableName);
 
@@ -260,29 +260,29 @@ public class CosmosOperations implements IdbConnector {
                 ((ObjectNode) dataNode).remove(request.type());
                 document.put("timestamp", (double) System.currentTimeMillis());
                 container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
-                return new Response(HTTP_OK, "Field '" + request.type() + "' deleted successfully.", null);
+                return new CloudResponse(HTTP_OK, "Field '" + request.type() + "' deleted successfully.", null);
             }
-            return new Response(HTTP_OK, "Field '" + request.type() + "' not found.", null);
+            return new CloudResponse(HTTP_OK, "Field '" + request.type() + "' not found.", null);
         }
 
         // Case 2: Delete entire document if ID is present but Type is NOT
         if (hasId(request)) {
             container.deleteItem(request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
-            return new Response(HTTP_OK, "Document deleted successfully.", null);
+            return new CloudResponse(HTTP_OK, "Document deleted successfully.", null);
         }
 
         // Case 3: Delete entire container if ID is missing
         container.delete();
-        return new Response(HTTP_OK, "Container '" + tableName + "' deleted successfully.", null);
+        return new CloudResponse(HTTP_OK, "Container '" + tableName + "' deleted successfully.", null);
     }
 
     /**
      * Updates a document with new data.
      * @param request The entity containing ID and updated data.
-     * @return Response indicating update result.
+     * @return CloudResponse indicating update result.
      */
     @Override
-    public Response updateData(final Entity request) {
+    public CloudResponse updateData(final Entity request) {
         final CosmosContainer container = database.getContainer(request.module() + "_" + request.table());
 
         if (request.type() != null && !request.type().isEmpty()) {
@@ -298,7 +298,7 @@ public class CosmosOperations implements IdbConnector {
             final JsonNode newValue = request.data().get(request.type());
 
             if (newValue == null) {
-                return new Response(HTTP_BAD_REQUEST, "New value was not provided for data to be updated: "
+                return new CloudResponse(HTTP_BAD_REQUEST, "New value was not provided for data to be updated: "
                         + request.type(), null);
             }
 
@@ -306,7 +306,7 @@ public class CosmosOperations implements IdbConnector {
             document.put("timestamp", (double) System.currentTimeMillis());
 
             container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
-            return new Response(HTTP_OK, "Field '" + request.type() + "' updated successfully.", null);
+            return new CloudResponse(HTTP_OK, "Field '" + request.type() + "' updated successfully.", null);
         }
 
         final ObjectNode document = mapper.createObjectNode();
@@ -315,6 +315,6 @@ public class CosmosOperations implements IdbConnector {
         document.set("data", request.data());
 
         container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
-        return new Response(HTTP_OK, "Document updated successfully.", null);
+        return new CloudResponse(HTTP_OK, "Document updated successfully.", null);
     }
 }

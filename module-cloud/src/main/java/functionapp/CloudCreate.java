@@ -21,7 +21,7 @@ import com.microsoft.azure.functions.annotation.HttpTrigger;
 
 import cosmosoperations.DbConnectorFactory;
 import datastructures.Entity;
-import datastructures.Response;
+import datastructures.CloudResponse;
 import interfaces.IdbConnector;
 
 
@@ -48,10 +48,10 @@ public class CloudCreate extends CloudHelper {
 
             final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("cosmo");
             context.getLogger().info("Initialized DB Connector");
-            final Response response =  dbConnector.createData(entityRequest);
-            context.getLogger().info("Received Create Response: [" + response.status_code() + "] " + response.message());
+            final CloudResponse cloudResponse =  dbConnector.createData(entityRequest);
+            context.getLogger().info("Received Create CloudResponse: [" + cloudResponse.status_code() + "] " + cloudResponse.message());
 
-            return handleResponse(response, request);
+            return handleResponse(cloudResponse, request);
 
         } catch (Exception e) {
             context.getLogger().info("[ERROR] Exception in CloudCreate: " + e.getMessage());

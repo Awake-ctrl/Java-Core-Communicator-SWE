@@ -10,8 +10,8 @@ package cosmosoperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import datastructures.CloudResponse;
 import datastructures.Entity;
-import datastructures.Response;
 import interfaces.IdbConnector;
 
 /** Mock database connector for testing. */
@@ -24,7 +24,7 @@ public class MockDbConnector implements IdbConnector {
 
     /** Mock GET operation. */
     @Override
-    public Response getData(final Entity request) {
+    public CloudResponse getData(final Entity request) {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode jsonData = mapper.createObjectNode();
 
@@ -33,12 +33,12 @@ public class MockDbConnector implements IdbConnector {
         jsonData.put("table", request.table());
         jsonData.put("id", request.id());
 
-        return new Response(STATUS_OK, "success", jsonData);
+        return new CloudResponse(STATUS_OK, "success", jsonData);
     }
 
     /** Mock POST operation. */
     @Override
-    public Response postData(final Entity request) {
+    public CloudResponse postData(final Entity request) {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode jsonData = mapper.createObjectNode();
 
@@ -47,12 +47,12 @@ public class MockDbConnector implements IdbConnector {
         jsonData.put("table", request.table());
         jsonData.put("id", request.id());
 
-        return new Response(STATUS_OK, "success", jsonData);
+        return new CloudResponse(STATUS_OK, "success", jsonData);
     }
 
     /** Mock CREATE operation. */
     @Override
-    public Response createData(final Entity request) {
+    public CloudResponse createData(final Entity request) {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode jsonData = mapper.createObjectNode();
 
@@ -61,12 +61,12 @@ public class MockDbConnector implements IdbConnector {
         jsonData.put("table", request.table());
         jsonData.put("id", request.id());
 
-        return new Response(STATUS_OK, "success", jsonData);
+        return new CloudResponse(STATUS_OK, "success", jsonData);
     }
 
     /** Mock DELETE operation. */
     @Override
-    public Response deleteData(final Entity request) {
+    public CloudResponse deleteData(final Entity request) {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode jsonData = mapper.createObjectNode();
 
@@ -75,12 +75,12 @@ public class MockDbConnector implements IdbConnector {
         jsonData.put("table", request.table());
         jsonData.put("id", request.id());
 
-        return new Response(STATUS_OK, "success", jsonData);
+        return new CloudResponse(STATUS_OK, "success", jsonData);
     }
 
     /** Mock UPDATE operation. */
     @Override
-    public Response updateData(final Entity request) {
+    public CloudResponse updateData(final Entity request) {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode jsonData = mapper.createObjectNode();
 
@@ -89,6 +89,6 @@ public class MockDbConnector implements IdbConnector {
         jsonData.put("table", request.table());
         jsonData.put("id", request.id());
 
-        return new Response(STATUS_OK, "success", jsonData);
+        return new CloudResponse(STATUS_OK, "success", jsonData);
     }
 }

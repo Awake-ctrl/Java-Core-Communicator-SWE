@@ -20,8 +20,8 @@ import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
 
 import cosmosoperations.DbConnectorFactory;
+import datastructures.CloudResponse;
 import datastructures.Entity;
-import datastructures.Response;
 import interfaces.IdbConnector;
 
 /**
@@ -47,10 +47,10 @@ public class CloudDelete extends CloudHelper {
 
             final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("cosmo");
             context.getLogger().info("Initialized DB Connector");
-            final Response response = dbConnector.deleteData(entityRequest);
-            context.getLogger().info("Received Delete Response: [" + response.status_code() + "] " + response.message());
+            final CloudResponse cloudResponse = dbConnector.deleteData(entityRequest);
+            context.getLogger().info("Received Delete CloudResponse: [" + cloudResponse.status_code() + "] " + cloudResponse.message());
 
-            return handleResponse(response, request);
+            return handleResponse(cloudResponse, request);
 
         } catch (Exception e) {
             context.getLogger().info("[ERROR] Exception in CloudDelete: " + e.getMessage());
