@@ -1,5 +1,5 @@
 /******************************************************************************
- * Filename    = Response.java
+ * Filename    = CloudResponse.java
  * Author      = Kallepally Sai Kiran, Nikhil S Thomas
  * Product     = cloud-function-app
  * Project     = Comm-Uni-Cator
@@ -10,4 +10,4 @@ package datastructures;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public record Response(int status_code, String message, JsonNode data) { }
+public record CloudResponse(int status_code, String message, JsonNode data) { }

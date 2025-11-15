@@ -2,12 +2,11 @@ package cosmosoperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import datastructures.CloudResponse;
 import datastructures.Entity;
-import datastructures.Response;
 import interfaces.IdbConnector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,10 +28,10 @@ class MockDbConnectorTest {
 
     @Test
     void getDataTest() {
-        Response testResponse = mockDbConnector.getData(testEntity);
-        assertInstanceOf(Response.class, testResponse);
-        assertEquals(200, testResponse.status_code());
-        assertEquals("success", testResponse.message());
+        CloudResponse testCloudResponse = mockDbConnector.getData(testEntity);
+        assertInstanceOf(CloudResponse.class, testCloudResponse);
+        assertEquals(200, testCloudResponse.status_code());
+        assertEquals("success", testCloudResponse.message());
 
         ObjectNode testObject = new ObjectMapper().createObjectNode();
         testObject.put("operation", "GET");
@@ -40,16 +39,16 @@ class MockDbConnectorTest {
         testObject.put("table", "TestTable");
         testObject.put("id", "TestId");
 
-        assertEquals(testObject, testResponse.data());
+        assertEquals(testObject, testCloudResponse.data());
     }
 
     @Test
     void postDataTest() {
 
-        Response testResponse = mockDbConnector.postData(testEntity);
-        assertInstanceOf(Response.class, testResponse);
-        assertEquals(200, testResponse.status_code());
-        assertEquals("success", testResponse.message());
+        CloudResponse testCloudResponse = mockDbConnector.postData(testEntity);
+        assertInstanceOf(CloudResponse.class, testCloudResponse);
+        assertEquals(200, testCloudResponse.status_code());
+        assertEquals("success", testCloudResponse.message());
 
         ObjectNode testObject = new ObjectMapper().createObjectNode();
         testObject.put("operation", "POST");
@@ -57,16 +56,16 @@ class MockDbConnectorTest {
         testObject.put("table", "TestTable");
         testObject.put("id", "TestId");
 
-        assertEquals(testObject, testResponse.data());
+        assertEquals(testObject, testCloudResponse.data());
     }
 
     @Test
     void createDataTest() {
 
-        Response testResponse = mockDbConnector.createData(testEntity);
-        assertInstanceOf(Response.class, testResponse);
-        assertEquals(200, testResponse.status_code());
-        assertEquals("success", testResponse.message());
+        CloudResponse testCloudResponse = mockDbConnector.createData(testEntity);
+        assertInstanceOf(CloudResponse.class, testCloudResponse);
+        assertEquals(200, testCloudResponse.status_code());
+        assertEquals("success", testCloudResponse.message());
 
         ObjectNode testObject = new ObjectMapper().createObjectNode();
         testObject.put("operation", "CREATE");
@@ -74,16 +73,16 @@ class MockDbConnectorTest {
         testObject.put("table", "TestTable");
         testObject.put("id", "TestId");
 
-        assertEquals(testObject, testResponse.data());
+        assertEquals(testObject, testCloudResponse.data());
     }
 
     @Test
     void deleteDataTest() {
 
-        Response testResponse = mockDbConnector.deleteData(testEntity);
-        assertInstanceOf(Response.class, testResponse);
-        assertEquals(200, testResponse.status_code());
-        assertEquals("success", testResponse.message());
+        CloudResponse testCloudResponse = mockDbConnector.deleteData(testEntity);
+        assertInstanceOf(CloudResponse.class, testCloudResponse);
+        assertEquals(200, testCloudResponse.status_code());
+        assertEquals("success", testCloudResponse.message());
 
         ObjectNode testObject = new ObjectMapper().createObjectNode();
         testObject.put("operation", "DELETE");
@@ -91,16 +90,16 @@ class MockDbConnectorTest {
         testObject.put("table", "TestTable");
         testObject.put("id", "TestId");
 
-        assertEquals(testObject, testResponse.data());
+        assertEquals(testObject, testCloudResponse.data());
     }
 
     @Test
     void updateDataTest() {
 
-        Response testResponse = mockDbConnector.updateData(testEntity);
-        assertInstanceOf(Response.class, testResponse);
-        assertEquals(200, testResponse.status_code());
-        assertEquals("success", testResponse.message());
+        CloudResponse testCloudResponse = mockDbConnector.updateData(testEntity);
+        assertInstanceOf(CloudResponse.class, testCloudResponse);
+        assertEquals(200, testCloudResponse.status_code());
+        assertEquals("success", testCloudResponse.message());
 
         ObjectNode testObject = new ObjectMapper().createObjectNode();
         testObject.put("operation", "UPDATE");
@@ -108,6 +107,6 @@ class MockDbConnectorTest {
         testObject.put("table", "TestTable");
         testObject.put("id", "TestId");
 
-        assertEquals(testObject, testResponse.data());
+        assertEquals(testObject, testCloudResponse.data());
     }
 }

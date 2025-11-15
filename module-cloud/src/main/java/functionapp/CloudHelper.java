@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.microsoft.azure.functions.HttpRequestMessage;
 import com.microsoft.azure.functions.HttpResponseMessage;
 import com.microsoft.azure.functions.HttpStatus;
-import datastructures.Response;
+import datastructures.CloudResponse;
 
 import java.util.Optional;
 
@@ -32,10 +32,10 @@ public class CloudHelper {
     }
 
     protected HttpResponseMessage handleError(final HttpRequestMessage<Optional<String>> request) {
-        final Response errorResponse = new Response(400, "bad request", NullNode.getInstance());
+        final CloudResponse errorCloudResponse = new CloudResponse(400, "bad request", NullNode.getInstance());
         try {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body(objectMapper.writeValueAsString(errorResponse))
+                    .body(objectMapper.writeValueAsString(errorCloudResponse))
                     .header("Content-Type", "application/json")
                     .build();
         } catch (Exception ex) {
@@ -45,10 +45,10 @@ public class CloudHelper {
         }
     }
 
-    protected HttpResponseMessage handleResponse(final Response response, final HttpRequestMessage<Optional<String>> request) {
+    protected HttpResponseMessage handleResponse(final CloudResponse cloudResponse, final HttpRequestMessage<Optional<String>> request) {
         try {
             return request.createResponseBuilder(HttpStatus.OK)
-                    .body(objectMapper.writeValueAsString(response))
+                    .body(objectMapper.writeValueAsString(cloudResponse))
                     .header("Content-Type", "application/json")
                     .build();
         } catch (Exception e) {

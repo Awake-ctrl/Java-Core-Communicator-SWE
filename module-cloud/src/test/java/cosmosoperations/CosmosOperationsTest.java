@@ -2,10 +2,9 @@ package cosmosoperations;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import datastructures.CloudResponse;
 import datastructures.Entity;
-import datastructures.Response;
 import datastructures.TimeRange;
 import interfaces.IdbConnector;
 import org.junit.jupiter.api.*;
@@ -72,22 +71,22 @@ class CosmosOperationsTest {
 
     @Test
     void getDataTest() {
-        Response response = cosmosDbConnector.getData(testEntity);
+        CloudResponse cloudResponse = cosmosDbConnector.getData(testEntity);
 
-        assertInstanceOf(Response.class, response);
-        assertEquals(200, response.status_code());
+        assertInstanceOf(CloudResponse.class, cloudResponse);
+        assertEquals(200, cloudResponse.status_code());
         assertTrue(
-                response.message().contains("retrieved successfully"),
+                cloudResponse.message().contains("retrieved successfully"),
                 "Expected retrieval success message"
         );
     }
 
     @Test
     void postData_ConflictTest() {
-        Response response = cosmosDbConnector.postData(testEntity);
+        CloudResponse cloudResponse = cosmosDbConnector.postData(testEntity);
 
-        assertEquals(409, response.status_code());
-        assertTrue(response.message().contains("already exists"),
+        assertEquals(409, cloudResponse.status_code());
+        assertTrue(cloudResponse.message().contains("already exists"),
                 "Expected conflict message for duplicate ID");
     }
 
@@ -95,33 +94,33 @@ class CosmosOperationsTest {
     void postDataTest() {
         cosmosDbConnector.deleteData(testEntity);
 
-        Response response = cosmosDbConnector.postData(testEntity);
+        CloudResponse cloudResponse = cosmosDbConnector.postData(testEntity);
 
-        assertInstanceOf(Response.class, response);
-        assertEquals(200, response.status_code());
-        assertEquals("Document inserted successfully.", response.message());
-        assertNull(response.data(), "Insert operation should return null data");
+        assertInstanceOf(CloudResponse.class, cloudResponse);
+        assertEquals(200, cloudResponse.status_code());
+        assertEquals("Document inserted successfully.", cloudResponse.message());
+        assertNull(cloudResponse.data(), "Insert operation should return null data");
     }
 
     @Test
     void createDataTest() {
-        Response response = cosmosDbConnector.createData(testEntity);
+        CloudResponse cloudResponse = cosmosDbConnector.createData(testEntity);
 
-        assertInstanceOf(Response.class, response);
-        assertEquals(200, response.status_code());
-        assertTrue(response.message().contains("already exists"),
+        assertInstanceOf(CloudResponse.class, cloudResponse);
+        assertEquals(200, cloudResponse.status_code());
+        assertTrue(cloudResponse.message().contains("already exists"),
                 "Expected container creation or existence message"
         );
     }
 
     @Test
     void deleteDataTest() {
-        Response response = cosmosDbConnector.deleteData(testEntity);
+        CloudResponse cloudResponse = cosmosDbConnector.deleteData(testEntity);
 
-        assertInstanceOf(Response.class, response);
-        assertEquals(200, response.status_code());
+        assertInstanceOf(CloudResponse.class, cloudResponse);
+        assertEquals(200, cloudResponse.status_code());
         assertTrue(
-                response.message().contains("deleted successfully"),
+                cloudResponse.message().contains("deleted successfully"),
                 "Expected deletion success message"
         );
     }
@@ -132,12 +131,12 @@ class CosmosOperationsTest {
                 testEntity.module(), testEntity.table(), testEntity.id(),
                 "data1", -1, null, null
         );
-        Response deleteResponse = cosmosDbConnector.deleteData(deleteFieldEntity);
-        assertEquals(200, deleteResponse.status_code());
-        assertTrue(deleteResponse.message().contains("Field 'data1' deleted"));
+        CloudResponse deleteCloudResponse = cosmosDbConnector.deleteData(deleteFieldEntity);
+        assertEquals(200, deleteCloudResponse.status_code());
+        assertTrue(deleteCloudResponse.message().contains("Field 'data1' deleted"));
 
-        Response getResponse = cosmosDbConnector.getData(testEntity);
-        JsonNode fetchedData = getResponse.data().get("data");
+        CloudResponse getCloudResponse = cosmosDbConnector.getData(testEntity);
+        JsonNode fetchedData = getCloudResponse.data().get("data");
 
         assertFalse(fetchedData.has("data1"), "Field 'data1' should have been deleted");
         assertTrue(fetchedData.has("data2"), "Field 'data2' should still exist");
@@ -145,12 +144,12 @@ class CosmosOperationsTest {
 
     @Test
     void deleteContainerTest() {
-        Response response = cosmosDbConnector.deleteData(deleteContainerEntity);
+        CloudResponse cloudResponse = cosmosDbConnector.deleteData(deleteContainerEntity);
 
-        assertInstanceOf(Response.class, response);
-        assertEquals(200, response.status_code());
+        assertInstanceOf(CloudResponse.class, cloudResponse);
+        assertEquals(200, cloudResponse.status_code());
         assertTrue(
-                response.message().contains("deleted successfully"),
+                cloudResponse.message().contains("deleted successfully"),
                 "Expected container deletion success message"
         );
         cosmosDbConnector.createData(testEntity);
@@ -172,12 +171,12 @@ class CosmosOperationsTest {
                 updatedData
         );
 
-        Response response = cosmosDbConnector.updateData(updateEntity);
+        CloudResponse cloudResponse = cosmosDbConnector.updateData(updateEntity);
 
-        assertInstanceOf(Response.class, response);
-        assertEquals(200, response.status_code());
-        assertEquals("Document updated successfully.", response.message());
-        assertNull(response.data(), "Update operation should return null data");
+        assertInstanceOf(CloudResponse.class, cloudResponse);
+        assertEquals(200, cloudResponse.status_code());
+        assertEquals("Document updated successfully.", cloudResponse.message());
+        assertNull(cloudResponse.data(), "Update operation should return null data");
     }
 
     @Test
@@ -189,11 +188,11 @@ class CosmosOperationsTest {
                 testEntity.module(), testEntity.table(), testEntity.id(),
                 "data1", -1, null, dataWrapper
         );
-        Response updateResponse = cosmosDbConnector.updateData(updateFieldEntity);
-        assertEquals(200, updateResponse.status_code());
+        CloudResponse updateCloudResponse = cosmosDbConnector.updateData(updateFieldEntity);
+        assertEquals(200, updateCloudResponse.status_code());
 
-        Response getResponse = cosmosDbConnector.getData(testEntity);
-        JsonNode fetchedData = getResponse.data().get("data");
+        CloudResponse getCloudResponse = cosmosDbConnector.getData(testEntity);
+        JsonNode fetchedData = getCloudResponse.data().get("data");
 
         assertEquals(999, fetchedData.get("data1").asInt());
         assertEquals(1, fetchedData.get("data2").asInt());
@@ -208,11 +207,11 @@ class CosmosOperationsTest {
                 testEntity.module(), testEntity.table(), testEntity.id(),
                 "data3", -1, null, dataWrapper
         );
-        Response updateResponse = cosmosDbConnector.updateData(updateNewFieldEntity);
-        assertEquals(200, updateResponse.status_code());
+        CloudResponse updateCloudResponse = cosmosDbConnector.updateData(updateNewFieldEntity);
+        assertEquals(200, updateCloudResponse.status_code());
 
-        Response getResponse = cosmosDbConnector.getData(testEntity);
-        JsonNode fetchedData = getResponse.data().get("data");
+        CloudResponse getCloudResponse = cosmosDbConnector.getData(testEntity);
+        JsonNode fetchedData = getCloudResponse.data().get("data");
 
         assertTrue(fetchedData.has("data3"));
         assertEquals(888, fetchedData.get("data3").asInt());
@@ -230,9 +229,9 @@ class CosmosOperationsTest {
                 null
         );
 
-        Response response = cosmosDbConnector.getData(entityWithType);
-        assertEquals(200, response.status_code());
-        assertEquals(0, response.data().asInt());
+        CloudResponse cloudResponse = cosmosDbConnector.getData(entityWithType);
+        assertEquals(200, cloudResponse.status_code());
+        assertEquals(0, cloudResponse.data().asInt());
     }
 
     @Test
@@ -244,11 +243,11 @@ class CosmosOperationsTest {
                 null, -1, null, null
         );
 
-        Response response = cosmosDbConnector.getData(fetchAllEntity);
-        assertEquals(200, response.status_code());
-        assertTrue(response.data().isArray());
-        assertEquals(1, response.data().size());
-        assertEquals(testEntity.id(), response.data().get(0).path("id").asText());
+        CloudResponse cloudResponse = cosmosDbConnector.getData(fetchAllEntity);
+        assertEquals(200, cloudResponse.status_code());
+        assertTrue(cloudResponse.data().isArray());
+        assertEquals(1, cloudResponse.data().size());
+        assertEquals(testEntity.id(), cloudResponse.data().get(0).path("id").asText());
     }
 
     @Test
@@ -257,8 +256,8 @@ class CosmosOperationsTest {
                 testEntity.module(), testEntity.table(),
                 null, null, -1, null, null
         );
-        Response getResponse = cosmosDbConnector.getData(fetchAllEntity);
-        double timestamp = getResponse.data().get(0).path("timestamp").asDouble();
+        CloudResponse getCloudResponse = cosmosDbConnector.getData(fetchAllEntity);
+        double timestamp = getCloudResponse.data().get(0).path("timestamp").asDouble();
 
         TimeRange timeRange = new TimeRange(timestamp - 10000.0f, timestamp + 10000.0f);
 
@@ -267,10 +266,10 @@ class CosmosOperationsTest {
                 null, null, -1, timeRange, null
         );
 
-        Response queryResponse = cosmosDbConnector.getData(queryEntity);
-        assertEquals(200, queryResponse.status_code());
-        assertTrue(queryResponse.data().isArray());
-        assertEquals(1, queryResponse.data().size());
+        CloudResponse queryCloudResponse = cosmosDbConnector.getData(queryEntity);
+        assertEquals(200, queryCloudResponse.status_code());
+        assertTrue(queryCloudResponse.data().isArray());
+        assertEquals(1, queryCloudResponse.data().size());
     }
 
     @Test
@@ -288,11 +287,11 @@ class CosmosOperationsTest {
                 null, "data1", 1, null, null
         );
 
-        Response response = cosmosDbConnector.getData(fetchAllEntity);
-        assertEquals(200, response.status_code());
-        assertTrue(response.data().isArray());
-        assertEquals(1, response.data().size());
-        assertEquals(100, response.data().get(0).asInt());
+        CloudResponse cloudResponse = cosmosDbConnector.getData(fetchAllEntity);
+        assertEquals(200, cloudResponse.status_code());
+        assertTrue(cloudResponse.data().isArray());
+        assertEquals(1, cloudResponse.data().size());
+        assertEquals(100, cloudResponse.data().get(0).asInt());
 
         cosmosDbConnector.deleteData(testEntity2);
     }

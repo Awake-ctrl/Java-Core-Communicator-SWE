@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.functions.*;
 import org.junit.jupiter.api.Test;
 
-import datastructures.Response;
+import datastructures.CloudResponse;
 
 class CloudHelperTest {
 
@@ -28,9 +28,9 @@ class CloudHelperTest {
     @Test
     void handleResponseTest() {
         HttpRequestMessage<Optional<String>> request = mockRequest();
-        Response testResponse = new Response(200, "success", null);
+        CloudResponse testCloudResponse = new CloudResponse(200, "success", null);
 
-        HttpResponseMessage response = testHelper.handleResponse(testResponse, request);
+        HttpResponseMessage response = testHelper.handleResponse(testCloudResponse, request);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatus());
@@ -47,8 +47,8 @@ class CloudHelperTest {
         f.setAccessible(true);
         f.set(testHelper, mockMapper);
 
-        Response testResponse = new Response(200, "fail", null);
-        HttpResponseMessage response = testHelper.handleResponse(testResponse, request);
+        CloudResponse testCloudResponse = new CloudResponse(200, "fail", null);
+        HttpResponseMessage response = testHelper.handleResponse(testCloudResponse, request);
 
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
