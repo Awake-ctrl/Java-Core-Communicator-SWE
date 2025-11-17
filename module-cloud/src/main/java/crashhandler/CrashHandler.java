@@ -3,9 +3,9 @@ package crashhandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import datastructures.Entity;
+import datastructures.Response;
 import functionlibrary.CloudFunctionLibrary;
 import interfaces.ICrashHandler;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,6 +23,9 @@ public class CrashHandler implements ICrashHandler {
     /** Collection to which the logs get stored. */
     private static final String COLLECTION = "Exception";
 
+    /** The Id field which is required while storing data. */
+    private static int exceptionId = 1;
+
     /**
      * Function which starts the exception handler and handles the logging logic.
      */
@@ -35,9 +38,12 @@ public class CrashHandler implements ICrashHandler {
         isCreated = true;
 
         final CloudFunctionLibrary cloudFunctionLibrary = new CloudFunctionLibrary();
+//        final InsightProvider insightProvider = new InsightProvider();
 
         try {
-            cloudFunctionLibrary.cloudCreate(new Entity(null, "ExceptionLogs", null, null, -1, null, null));
+            final Response responseCreate = cloudFunctionLibrary.cloudCreate(new Entity("CLOUD", "ExceptionLogs", null, null, -1, null, null));
+            final Response responseGet = cloudFunctionLibrary.cloudGet(new Entity("CLOUD", "ExceptionLogs", null, null, 1, null, null));
+            exceptionId = responseGet.data().get(0).get("id").asInt();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -52,22 +58,21 @@ public class CrashHandler implements ICrashHandler {
             final JsonNode exceptionJsonNode = toJsonNode(exceptionName, timestamp, exceptionMessage, exceptionString, stackJoined);
 
             final Entity exceptionEntity = new Entity(
-                    null,
+                    "CLOUD",
                     "ExceptionLogs",
-                    null,
+                    Integer.toString(++exceptionId),
                     null,
                     -1,
                     null,
                     exceptionJsonNode
             );
-            System.out.println("Inside def...");
-            new Thread(() -> {
-                try {
-                    cloudFunctionLibrary.cloudPost(exceptionEntity);
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }, "WorkerThreadStoreException").start();
+
+            try {
+                final Response responsePost = cloudFunctionLibrary.cloudPost(exceptionEntity);
+//              final String response = insightProvider.getInsights(exceptionEntity.toString());
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
