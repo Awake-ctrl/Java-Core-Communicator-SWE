@@ -3,7 +3,7 @@ package crashhandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import datastructures.Entity;
-import datastructures.Response;
+import datastructures.CloudResponse;
 import functionlibrary.CloudFunctionLibrary;
 import interfaces.ICrashHandler;
 import java.io.IOException;
@@ -41,8 +41,8 @@ public class CrashHandler implements ICrashHandler {
 //        final InsightProvider insightProvider = new InsightProvider();
 
         try {
-            final Response responseCreate = cloudFunctionLibrary.cloudCreate(new Entity("CLOUD", "ExceptionLogs", null, null, -1, null, null));
-            final Response responseGet = cloudFunctionLibrary.cloudGet(new Entity("CLOUD", "ExceptionLogs", null, null, 1, null, null));
+            final CloudResponse responseCreate = cloudFunctionLibrary.cloudCreate(new Entity("CLOUD", "ExceptionLogs", null, null, -1, null, null));
+            final CloudResponse responseGet = cloudFunctionLibrary.cloudGet(new Entity("CLOUD", "ExceptionLogs", null, null, 1, null, null));
             exceptionId = responseGet.data().get(0).get("id").asInt();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -68,7 +68,7 @@ public class CrashHandler implements ICrashHandler {
             );
 
             try {
-                final Response responsePost = cloudFunctionLibrary.cloudPost(exceptionEntity);
+                final CloudResponse responsePost = cloudFunctionLibrary.cloudPost(exceptionEntity);
 //              final String response = insightProvider.getInsights(exceptionEntity.toString());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
