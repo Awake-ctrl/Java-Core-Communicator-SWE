@@ -19,6 +19,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Function Library for calling Azure Cloud Function APIs.
@@ -129,4 +131,24 @@ public class CloudFunctionLibrary {
         return objectMapper.readValue(jsonResponse, CloudResponse.class);
     }
 
+    /**
+     * Sends a telemetry log to the cloud synchronously.
+     *
+     * @param moduleName The name of the module sending the log.
+     * @param severity   The severity level of the log (e.g., INFO, ERROR).
+     * @param message    The log message.
+     */
+    public void sendLog(final String moduleName, final String severity, final String message) {
+        try {
+            final Map<String, String> logData = new HashMap<>();
+            logData.put("moduleName", moduleName);
+            logData.put("severity", severity);
+            logData.put("message", message);
+
+            final String payload = objectMapper.writeValueAsString(logData);
+            callAPI("/telemetry/log", "POST", payload);
+        } catch (final Exception e) {
+            System.err.println("Failed to send log: " + e.getMessage());
+        }
+    }
 }
