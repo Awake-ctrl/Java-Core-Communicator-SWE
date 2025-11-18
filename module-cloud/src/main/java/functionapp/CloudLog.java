@@ -24,6 +24,9 @@ public class CloudLog {
     /** Telemetry client for Application Insights. */
     private static final TelemetryClient TELEMETRY_CLIENT = new TelemetryClient();
 
+    /** Delay in milliseconds to allow telemetry to flush before process exit. */
+    private static final int TELEMETRY_FLUSH_WAIT_MS = 1000;
+
     /** Object mapper for JSON processing. */
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -65,7 +68,7 @@ public class CloudLog {
                 TELEMETRY_CLIENT.trackTrace(message, SeverityLevel.Information, properties);
             }
             TELEMETRY_CLIENT.flush();
-            Thread.sleep(1000);
+            Thread.sleep(TELEMETRY_FLUSH_WAIT_MS);
             return request.createResponseBuilder(HttpStatus.OK).build();
         } catch (final Exception e) {
             context.getLogger().severe("Telemetry failed: " + e.getMessage());
