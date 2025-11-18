@@ -65,9 +65,7 @@ public class CloudLog {
                 TELEMETRY_CLIENT.trackTrace(message, SeverityLevel.Information, properties);
             }
             TELEMETRY_CLIENT.flush();
-            TELEMETRY_CLIENT.trackTrace("CloudLog hardcoded trace from function", SeverityLevel.Error, null);
-            TELEMETRY_CLIENT.flush();
-            context.getLogger().info("CloudLog: sent hardcoded trace");
+            Thread.sleep(1000);
             return request.createResponseBuilder(HttpStatus.OK).build();
         } catch (final Exception e) {
             context.getLogger().severe("Telemetry failed: " + e.getMessage());
