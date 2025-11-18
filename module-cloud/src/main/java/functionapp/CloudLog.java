@@ -3,6 +3,7 @@ package functionapp;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.TelemetryClient;
+import com.microsoft.applicationinsights.TelemetryConfiguration;
 import com.microsoft.applicationinsights.telemetry.SeverityLevel;
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpMethod;
@@ -22,10 +23,7 @@ import java.util.Optional;
 public class CloudLog {
 
     /** Telemetry client for Application Insights. */
-    private static final TelemetryClient TELEMETRY_CLIENT = new TelemetryClient();
-
-    /** Delay in milliseconds to allow telemetry to flush before process exit. */
-    private static final int TELEMETRY_FLUSH_WAIT_MS = 1000;
+    private static TelemetryClient telemetryClient;
 
     /** Object mapper for JSON processing. */
     private final ObjectMapper mapper = new ObjectMapper();
@@ -47,6 +45,24 @@ public class CloudLog {
             ) final HttpRequestMessage<Optional<String>> request,
             final ExecutionContext context) {
         try {
+            if (telemetryClient == null) {
+                final String connStr = System.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING");
+
+                if (connStr == null || connStr.isEmpty()) {
+                    context.getLogger().severe("CRITICAL ERROR: Connection String is NULL!");
+                } else {
+                    context.getLogger().info("Initializing TelemetryClient...");
+
+                    // Create a specific configuration for this client
+                    final TelemetryConfiguration configuration = TelemetryConfiguration.createDefault();
+                    try {
+                        configuration.setConnectionString(connStr);
+                    } catch (Exception ex) {
+                        context.getLogger().warning("Could not set connection string directly: " + ex.getMessage());
+                    }
+                    telemetryClient = new TelemetryClient(configuration);
+                }
+            }
             final String jsonBody = request.getBody().orElse(null);
             if (jsonBody == null) {
                 return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Empty body").build();
@@ -61,14 +77,13 @@ public class CloudLog {
             properties.put("ReportingModule", moduleName);
 
             if ("ERROR".equalsIgnoreCase(severity)) {
-                TELEMETRY_CLIENT.trackTrace(message, SeverityLevel.Error, properties);
+                telemetryClient.trackTrace(message, SeverityLevel.Error, properties);
             } else if ("WARNING".equalsIgnoreCase(severity)) {
-                TELEMETRY_CLIENT.trackTrace(message, SeverityLevel.Warning, properties);
+                telemetryClient.trackTrace(message, SeverityLevel.Warning, properties);
             } else {
-                TELEMETRY_CLIENT.trackTrace(message, SeverityLevel.Information, properties);
+                telemetryClient.trackTrace(message, SeverityLevel.Information, properties);
             }
-            TELEMETRY_CLIENT.flush();
-            Thread.sleep(TELEMETRY_FLUSH_WAIT_MS);
+            telemetryClient.flush();
             return request.createResponseBuilder(HttpStatus.OK).build();
         } catch (final Exception e) {
             context.getLogger().severe("Telemetry failed: " + e.getMessage());
