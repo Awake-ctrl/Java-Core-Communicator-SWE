@@ -2,11 +2,11 @@ package crashhandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import datastructures.Entity;
 import datastructures.CloudResponse;
 import functionlibrary.CloudFunctionLibrary;
 import interfaces.ICrashHandler;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
@@ -26,6 +26,12 @@ public class CrashHandler implements ICrashHandler {
     /** The Id field which is required while storing data. */
     private static int exceptionId = 1;
 
+    /** Return code for exception on create or get function calls. */
+    private static final int SUCCESS_CODE = 200;
+
+    /** Return code for startCrashHandler, default to zero. */
+    private int returnCode = 0;
+
     /**
      * Function which starts the exception handler and handles the logging logic.
      */
@@ -38,14 +44,19 @@ public class CrashHandler implements ICrashHandler {
         isCreated = true;
 
         final CloudFunctionLibrary cloudFunctionLibrary = new CloudFunctionLibrary();
-//        final InsightProvider insightProvider = new InsightProvider();
+        final InsightProvider insightProvider = new InsightProvider();
 
         try {
             final CloudResponse responseCreate = cloudFunctionLibrary.cloudCreate(new Entity("CLOUD", "ExceptionLogs", null, null, -1, null, null));
             final CloudResponse responseGet = cloudFunctionLibrary.cloudGet(new Entity("CLOUD", "ExceptionLogs", null, null, 1, null, null));
+
+            if (responseCreate.status_code() != SUCCESS_CODE || responseGet.status_code() != SUCCESS_CODE) {
+                throw new RuntimeException("Cloud Error...");
+            }
+
             exceptionId = responseGet.data().get(0).get("id").asInt();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            returnCode = SUCCESS_CODE;
         }
 
         Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
@@ -57,21 +68,21 @@ public class CrashHandler implements ICrashHandler {
 
             final JsonNode exceptionJsonNode = toJsonNode(exceptionName, timestamp, exceptionMessage, exceptionString, stackJoined);
 
-            final Entity exceptionEntity = new Entity(
-                    "CLOUD",
-                    "ExceptionLogs",
-                    Integer.toString(++exceptionId),
-                    null,
-                    -1,
-                    null,
-                    exceptionJsonNode
-            );
-
             try {
+                final String response = insightProvider.getInsights(exceptionJsonNode.toString());
+                ((ObjectNode) exceptionJsonNode).put("AIResponse", response);
+                final Entity exceptionEntity = new Entity(
+                        "CLOUD",
+                        "ExceptionLogs",
+                        Integer.toString(++exceptionId),
+                        null,
+                        -1,
+                        null,
+                        exceptionJsonNode
+                );
                 final CloudResponse responsePost = cloudFunctionLibrary.cloudPost(exceptionEntity);
-//              final String response = insightProvider.getInsights(exceptionEntity.toString());
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                returnCode = SUCCESS_CODE;
             }
         });
     }

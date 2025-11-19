@@ -1,14 +1,8 @@
 package crashhandler;
 
-import com.azure.ai.openai.OpenAIClient;
-import com.azure.ai.openai.OpenAIClientBuilder;
-import com.azure.ai.openai.models.ChatCompletions;
-import com.azure.ai.openai.models.ChatCompletionsOptions;
-import com.azure.ai.openai.models.ChatRequestSystemMessage;
-import com.azure.ai.openai.models.ChatRequestUserMessage;
-//import com.azure.core.credential.AzureKeyCredential;
+import com.google.genai.Client;
+import com.google.genai.types.GenerateContentResponse;
 
-import java.util.List;
 
 /**
  * Object which is the Azure-OpenAI client.
@@ -17,22 +11,14 @@ import java.util.List;
 class InsightProvider {
 
     /** OpenAI client. */
-    private final OpenAIClient client;
-
-    /** Endpoint for the azure AI. */
-    private final String aiEndPoint = "https://communicate.openai.azure.com/";
-
-    /** API Key for Azure AI. */
+    private final Client client;
 
     /** Deployment model. */
-    private final String deploymentModel = "gpt-4o";
+    private final String deploymentModel = "gemini-2.5-flash";
 
     /** Constructor for Insight Provider. */
     InsightProvider() {
-        this.client = new OpenAIClientBuilder()
-                .endpoint(aiEndPoint)
-//                .credential(new AzureKeyCredential()) -> provide key in cred.
-                .buildClient();
+        this.client = new Client();
     }
 
     /** Function to get the AI insights on crashes and exceptions.
@@ -40,23 +26,18 @@ class InsightProvider {
      * @return AI Response.
      */
     public String getInsights(final String crashData) {
-        final var messages = List.of(
-                new ChatRequestSystemMessage("""
-                    This is a crash analyzer."""),
-                new ChatRequestUserMessage("""
-                    Analyze what went wrong:
-                    %s""".formatted(crashData))
-        );
 
-        final var chatOptions = new ChatCompletionsOptions(messages);
-        final ChatCompletions response;
+        GenerateContentResponse response = null;
         try {
-            response = client.getChatCompletions(deploymentModel, chatOptions);
+            response = client.models.generateContent(
+                    deploymentModel,
+                    "Analyze this crash/exception:" + crashData,
+                    null
+            );
         } catch (Exception e) {
-            return "Clould not fetch analysis, no-joy" + e.getMessage();
+            return "No response, NOJOY" + e.getMessage();
         }
 
-        return response.getChoices().get(0).getMessage().getContent();
-
+        return response.text();
     }
 }

@@ -1,10 +1,12 @@
 package crashhandler;
 
+import datastructures.Entity;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CrashHandlerTest {
+
+    Entity testEntity = new Entity("CLOUD", "TestFailure", null, null, -1, null, null);
 
     @Test
     void testSingleton() {
@@ -31,7 +33,6 @@ class CrashHandlerTest {
         }, "crashingTestThread");
         crashingTread.start();
         crashingTread.join();
-//        Thread.sleep(10000);
     }
 
     @Test
@@ -54,6 +55,17 @@ class CrashHandlerTest {
         crashingTreadMain.join();
         crashingTreadSecondary.join();
 
-        Thread.sleep(10000);
     }
+
+//    @Test
+//    void testCloudCreateFailure() throws InterruptedException, IOException {
+//
+//        CloudFunctionLibrary mockCloudFunctionLibrary = Mockito.mock(CloudFunctionLibrary.class);
+//        when(mockCloudFunctionLibrary.cloudCreate(testEntity)).thenReturn(new CloudResponse(400, "Failure Testing", null));
+//
+//        CrashHandler testCrashHandler = new CrashHandler();
+//
+//        testCrashHandler.startCrashHandler();
+//        Thread.UncaughtExceptionHandler originalHandler = Thread.getDefaultUncaughtExceptionHandler();
+//    }
 }
