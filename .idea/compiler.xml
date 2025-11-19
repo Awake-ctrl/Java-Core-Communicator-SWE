@@ -25,13 +25,14 @@
           <entry name="$MAVEN_REPOSITORY$/org/objenesis/objenesis/2.6/objenesis-2.6.jar" />
         </processorPath>
         <module name="module-cloud" />
+        <module name="chat-cloud-module" />
+        <module name="controller-cloud-module" />
+        <module name="canvas-cloud-module" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="canvas-cloud-module" target="17" />
-      <module name="chat-cloud-module" target="17" />
-      <module name="cloud-function-app" target="17" />
-      <module name="controller-cloud-module" target="17" />
+      <module name="Cloud-Java-App" target="17" />
+      <module name="PizzaBuilder_Software_122201017_IndividualProject" target="24" />
     </bytecodeTargetLevel>
   </component>
 </project>
