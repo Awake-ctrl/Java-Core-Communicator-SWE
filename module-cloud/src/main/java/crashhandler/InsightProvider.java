@@ -11,14 +11,24 @@ import com.google.genai.types.GenerateContentResponse;
 class InsightProvider {
 
     /** OpenAI client. */
-    private final Client client;
+    private Client client;
+
+    /** Connection flag to check AI connection. */
+    private Boolean connectionFlag;
 
     /** Deployment model. */
     private final String deploymentModel = "gemini-2.5-flash";
 
     /** Constructor for Insight Provider. */
     InsightProvider() {
-        this.client = new Client();
+
+        try {
+            this.client = Client.builder()
+                    .apiKey(System.getenv("GEMINI_API_KEY"))
+                    .build();
+        } catch (Exception e) {
+            connectionFlag = false;
+        }
     }
 
     /** Function to get the AI insights on crashes and exceptions.
@@ -28,7 +38,11 @@ class InsightProvider {
     public String getInsights(final String crashData) {
 
         GenerateContentResponse response = null;
+
         try {
+            if (!connectionFlag) {
+                throw new RuntimeException("Connection establishment failed");
+            }
             response = client.models.generateContent(
                     deploymentModel,
                     "Analyze this crash/exception:" + crashData,

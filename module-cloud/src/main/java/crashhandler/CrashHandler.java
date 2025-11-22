@@ -7,6 +7,9 @@ import datastructures.Entity;
 import datastructures.CloudResponse;
 import functionlibrary.CloudFunctionLibrary;
 import interfaces.ICrashHandler;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
@@ -20,6 +23,9 @@ public class CrashHandler implements ICrashHandler {
     /** Variable to prevent redundant usage of setDefaultUncaughtExceptionHandler. */
     private static boolean isCreated = false;
 
+    /** CloudFunctionLibrary for crashhandler. */
+    private final CloudFunctionLibrary cloudFunctionLibrary;
+
     /** Collection to which the logs get stored. */
     private static final String COLLECTION = "Exception";
 
@@ -32,6 +38,10 @@ public class CrashHandler implements ICrashHandler {
     /** Return code for startCrashHandler, default to zero. */
     private int returnCode = 0;
 
+    public CrashHandler(final CloudFunctionLibrary cloudFunctionLibraryParam) {
+        this.cloudFunctionLibrary = cloudFunctionLibraryParam;
+    }
+
     /**
      * Function which starts the exception handler and handles the logging logic.
      */
@@ -43,7 +53,6 @@ public class CrashHandler implements ICrashHandler {
 
         isCreated = true;
 
-        final CloudFunctionLibrary cloudFunctionLibrary = new CloudFunctionLibrary();
         final InsightProvider insightProvider = new InsightProvider();
 
         try {
@@ -56,7 +65,7 @@ public class CrashHandler implements ICrashHandler {
 
             exceptionId = responseGet.data().get(0).get("id").asInt();
         } catch (Exception e) {
-            returnCode = SUCCESS_CODE;
+            // Do nothing...
         }
 
         Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
@@ -71,6 +80,7 @@ public class CrashHandler implements ICrashHandler {
             try {
                 final String response = insightProvider.getInsights(exceptionJsonNode.toString());
                 ((ObjectNode) exceptionJsonNode).put("AIResponse", response);
+                storeDataToFile(exceptionJsonNode.toString());
                 final Entity exceptionEntity = new Entity(
                         "CLOUD",
                         "ExceptionLogs",
@@ -82,7 +92,7 @@ public class CrashHandler implements ICrashHandler {
                 );
                 final CloudResponse responsePost = cloudFunctionLibrary.cloudPost(exceptionEntity).join();
             } catch (Exception e) {
-                returnCode = SUCCESS_CODE;
+                // Do nothing...
             }
         });
     }
@@ -112,4 +122,11 @@ public class CrashHandler implements ICrashHandler {
 
         return jsonNode;
     }
+
+    private void storeDataToFile(final String data) throws IOException {
+        final FileWriter fileWriter = new FileWriter("exception_log.jsonl", true);
+        fileWriter.write(data + System.lineSeparator());
+        fileWriter.close();
+    }
+
 }
