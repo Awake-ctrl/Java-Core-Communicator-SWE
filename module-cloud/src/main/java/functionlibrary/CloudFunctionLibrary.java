@@ -1,10 +1,9 @@
 /******************************************************************************
  * Filename    = CloudFunctionLibrary.java
- * Author      = Nikhil S Thomas
+ * Author      = kallepally sai kiran
  * Product     = cloud-function-app
  * Project     = Comm-Uni-Cator
- * Description = Function Library for calling Azure Function APIs
- *               created in the cloud module.
+ * Description = ASYNC Function Library for calling Azure Function APIs
  *****************************************************************************/
 
 package functionlibrary;
@@ -14,17 +13,17 @@ import datastructures.CloudResponse;
 import datastructures.Entity;
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
 import java.util.Map;
-
 /**
- * Function Library for calling Azure Cloud Function APIs.
+ * Function Library for calling Azure Cloud Function APIs asynchronously.
  */
+
 public class CloudFunctionLibrary {
 
     /** Base URL of the Cloud Functions. */
@@ -55,7 +54,7 @@ public class CloudFunctionLibrary {
      * @param payload JSON payload
      * @return CloudResponse body as string
      */
-    private String callAPI(final String api, final String method, final String payload) throws IOException, InterruptedException {
+    private CompletableFuture<String> callAPIAsync(final String api, final String method, final String payload) {
         final HttpRequest.Builder httpBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + api))
                 .header("Content-Type", "application/json");
@@ -72,8 +71,22 @@ public class CloudFunctionLibrary {
         }
 
         final HttpRequest httpRequest = httpBuilder.build();
-        final HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return httpResponse.body();
+        return httpClient
+                .sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+    }
+
+    /** Convert JSON to CloudResponse.
+     *
+     * @param  json Contains the Response with the type string
+     * @return convert the json in to type CloudResponse
+     * */
+    private CloudResponse convertToResponse(final String json) {
+        try {
+            return objectMapper.readValue(json, CloudResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse CloudResponse JSON: " + json, e);
+        }
     }
 
     /** Calls /cloudcreate endpoint.
@@ -81,10 +94,16 @@ public class CloudFunctionLibrary {
      * @param request Contains the request with type Entity
      * @return response from cloud function with type CloudResponse
      * */
-    public CloudResponse cloudCreate(final Entity request) throws IOException, InterruptedException {
-        final String payload = objectMapper.writeValueAsString(request);
-        final String jsonResponse = callAPI("/cloudcreate", "POST", payload);
-        return objectMapper.readValue(jsonResponse, CloudResponse.class);
+    public CompletableFuture<CloudResponse> cloudCreate(final Entity request) {
+        try {
+            final String payload = objectMapper.writeValueAsString(request);
+            return callAPIAsync("/cloudcreate", "POST", payload)
+                    .thenApply(this::convertToResponse);
+        } catch (Exception e) {
+            final CompletableFuture<CloudResponse> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
     }
 
     /** Calls /clouddelete endpoint.
@@ -92,10 +111,16 @@ public class CloudFunctionLibrary {
      * @param request Contains the request with type Entity
      * @return response from cloud function with type CloudResponse
      * */
-    public CloudResponse cloudDelete(final Entity request) throws IOException, InterruptedException {
-        final String payload = objectMapper.writeValueAsString(request);
-        final String jsonResponse = callAPI("/clouddelete", "POST", payload);
-        return objectMapper.readValue(jsonResponse, CloudResponse.class);
+    public CompletableFuture<CloudResponse> cloudDelete(final Entity request) {
+        try {
+            final String payload = objectMapper.writeValueAsString(request);
+            return callAPIAsync("/clouddelete", "POST", payload)
+                    .thenApply(this::convertToResponse);
+        } catch (Exception e) {
+            final CompletableFuture<CloudResponse> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
     }
 
     /** Calls /cloudget endpoint.
@@ -103,10 +128,16 @@ public class CloudFunctionLibrary {
      * @param request Contains the request with type Entity
      * @return response from cloud function with type CloudResponse
      * */
-    public CloudResponse cloudGet(final Entity request) throws IOException, InterruptedException {
-        final String payload = objectMapper.writeValueAsString(request);
-        final String jsonResponse = callAPI("/cloudget", "POST", payload);
-        return objectMapper.readValue(jsonResponse, CloudResponse.class);
+    public CompletableFuture<CloudResponse> cloudGet(final Entity request) {
+        try {
+            final String payload = objectMapper.writeValueAsString(request);
+            return callAPIAsync("/cloudget", "POST", payload)
+                    .thenApply(this::convertToResponse);
+        } catch (Exception e) {
+            final CompletableFuture<CloudResponse> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
     }
 
     /** Calls /cloudpost endpoint.
@@ -114,10 +145,16 @@ public class CloudFunctionLibrary {
      * @param request Contains the request with type Entity
      * @return response from cloud function with type CloudResponse
      * */
-    public CloudResponse cloudPost(final Entity request) throws IOException, InterruptedException {
-        final String payload = objectMapper.writeValueAsString(request);
-        final String jsonResponse = callAPI("/cloudpost", "POST", payload);
-        return objectMapper.readValue(jsonResponse, CloudResponse.class);
+    public CompletableFuture<CloudResponse> cloudPost(final Entity request) {
+        try {
+            final String payload = objectMapper.writeValueAsString(request);
+            return callAPIAsync("/cloudpost", "POST", payload)
+                    .thenApply(this::convertToResponse);
+        } catch (Exception e) {
+            final CompletableFuture<CloudResponse> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
     }
 
     /** Calls /cloudupdate endpoint.
@@ -125,20 +162,27 @@ public class CloudFunctionLibrary {
      * @param request Contains the request with type Entity
      * @return response from cloud function with type CloudResponse
      * */
-    public CloudResponse cloudUpdate(final Entity request) throws IOException, InterruptedException {
-        final String payload = objectMapper.writeValueAsString(request);
-        final String jsonResponse = callAPI("/cloudupdate", "PUT", payload);
-        return objectMapper.readValue(jsonResponse, CloudResponse.class);
+    public CompletableFuture<CloudResponse> cloudUpdate(final Entity request) {
+        try {
+            final String payload = objectMapper.writeValueAsString(request);
+            return callAPIAsync("/cloudupdate", "PUT", payload)
+                    .thenApply(this::convertToResponse);
+        } catch (Exception e) {
+            final CompletableFuture<CloudResponse> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
     }
 
     /**
-     * Sends a telemetry log to the cloud synchronously.
+     * Sends a telemetry log to the cloud asynchronously.
      *
      * @param moduleName The name of the module sending the log.
      * @param severity   The severity level of the log (e.g., INFO, ERROR).
      * @param message    The log message.
+     * @return A CompletableFuture that completes when the log is sent.
      */
-    public void sendLog(final String moduleName, final String severity, final String message) {
+    public CompletableFuture<Void> sendLogAsync(final String moduleName, final String severity, final String message) {
         try {
             final Map<String, String> logData = new HashMap<>();
             logData.put("moduleName", moduleName);
@@ -146,9 +190,18 @@ public class CloudFunctionLibrary {
             logData.put("message", message);
 
             final String payload = objectMapper.writeValueAsString(logData);
-            callAPI("/telemetry/log", "POST", payload);
+
+            return callAPIAsync("/telemetry/log", "POST", payload)
+                    .thenAccept(response -> {
+                        // Optionally handle response or log success
+                    });
+
         } catch (final Exception e) {
-            System.err.println("Failed to send log: " + e.getMessage());
+            final CompletableFuture<Void> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
         }
     }
+
+
 }
