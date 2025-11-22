@@ -182,7 +182,7 @@ public class CloudFunctionLibrary {
      * @param message    The log message.
      * @return A CompletableFuture that completes when the log is sent.
      */
-    public CompletableFuture<Void> sendLogAsync(final String moduleName, final String severity, final String message) {
+    public CompletableFuture<Void> sendLog(final String moduleName, final String severity, final String message) {
         try {
             final Map<String, String> logData = new HashMap<>();
             logData.put("moduleName", moduleName);
