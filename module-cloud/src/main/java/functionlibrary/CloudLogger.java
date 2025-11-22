@@ -59,6 +59,7 @@ public class CloudLogger {
      * Logs an INFO message to the local file only.
      *
      * @param message The message to log.
+     * @return A completable future of type void notifying that the job is complete
      */
     public CompletableFuture<Void> info(final String message) {
         return CompletableFuture.runAsync(() ->
@@ -70,12 +71,13 @@ public class CloudLogger {
      * Logs a WARNING message to the local file and sends it to the cloud.
      *
      * @param message The warning message.
+     * @return A completable future of type void notifying that the job is complete
      */
     public CompletableFuture<Void> warn(final String message) {
-        CompletableFuture<Void> localLogTask = CompletableFuture.runAsync(() ->
+        final CompletableFuture<Void> localLogTask = CompletableFuture.runAsync(() ->
                 INTERNAL_LOGGER.warning("[" + moduleName + "] " + message)
         );
-        CompletableFuture<Void> cloudLogTask = CLOUD_LIB.sendLog(moduleName, "WARNING", message);
+        final CompletableFuture<Void> cloudLogTask = CLOUD_LIB.sendLog(moduleName, "WARNING", message);
 
         return CompletableFuture.allOf(localLogTask, cloudLogTask);
     }
@@ -84,13 +86,14 @@ public class CloudLogger {
      * Logs an ERROR message to the local file and sends it to the cloud.
      *
      * @param message The error message.
+     * @return A completable future of type void notifying that the job is complete
      */
     public CompletableFuture<Void> error(final String message) {
-        CompletableFuture<Void> localLogTask = CompletableFuture.runAsync(() ->
+        final CompletableFuture<Void> localLogTask = CompletableFuture.runAsync(() ->
                 INTERNAL_LOGGER.severe("[" + moduleName + "] " + message)
         );
 
-        CompletableFuture<Void> cloudLogTask = CLOUD_LIB.sendLog(moduleName, "ERROR", message);
+        final CompletableFuture<Void> cloudLogTask = CLOUD_LIB.sendLog(moduleName, "ERROR", message);
 
         return CompletableFuture.allOf(localLogTask, cloudLogTask);
     }
@@ -100,6 +103,7 @@ public class CloudLogger {
      *
      * @param message The error message.
      * @param e       The exception to log.
+     * @return A completable future of type void notifying that the job is complete
      */
     public CompletableFuture<Void> error(final String message, final Exception e) {
         String exceptionDetails = "";
@@ -108,11 +112,11 @@ public class CloudLogger {
         }
         final String fullMessage = message + exceptionDetails;
 
-        CompletableFuture<Void> localLogTask = CompletableFuture.runAsync(() ->
+        final CompletableFuture<Void> localLogTask = CompletableFuture.runAsync(() ->
                 INTERNAL_LOGGER.severe("[" + moduleName + "] " + fullMessage)
         );
 
-        CompletableFuture<Void> cloudLogTask = CLOUD_LIB.sendLog(moduleName, "ERROR", fullMessage);
+        final CompletableFuture<Void> cloudLogTask = CLOUD_LIB.sendLog(moduleName, "ERROR", fullMessage);
 
         return CompletableFuture.allOf(localLogTask, cloudLogTask);
     }
