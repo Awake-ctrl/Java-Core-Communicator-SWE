@@ -47,8 +47,8 @@ public class CrashHandler implements ICrashHandler {
         final InsightProvider insightProvider = new InsightProvider();
 
         try {
-            final CloudResponse responseCreate = cloudFunctionLibrary.cloudCreate(new Entity("CLOUD", "ExceptionLogs", null, null, -1, null, null));
-            final CloudResponse responseGet = cloudFunctionLibrary.cloudGet(new Entity("CLOUD", "ExceptionLogs", null, null, 1, null, null));
+            final CloudResponse responseCreate = cloudFunctionLibrary.cloudCreate(new Entity("CLOUD", "ExceptionLogs", null, null, -1, null, null)).join();
+            final CloudResponse responseGet = cloudFunctionLibrary.cloudGet(new Entity("CLOUD", "ExceptionLogs", null, null, 1, null, null)).join();
 
             if (responseCreate.status_code() != SUCCESS_CODE || responseGet.status_code() != SUCCESS_CODE) {
                 throw new RuntimeException("Cloud Error...");
@@ -80,7 +80,7 @@ public class CrashHandler implements ICrashHandler {
                         null,
                         exceptionJsonNode
                 );
-                final CloudResponse responsePost = cloudFunctionLibrary.cloudPost(exceptionEntity);
+                final CloudResponse responsePost = cloudFunctionLibrary.cloudPost(exceptionEntity).join();
             } catch (Exception e) {
                 returnCode = SUCCESS_CODE;
             }
