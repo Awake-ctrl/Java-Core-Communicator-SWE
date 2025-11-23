@@ -1,3 +1,10 @@
+/********************************************************************************
+ * Filename    = InsightProvider.java
+ * Author      = Sooryanarayanan Ganesh
+ * Project     = Comm-Uni-Cator
+ * Description = Connects to a Gemini model and generates AI response for crashes.
+ *******************************************************************************/
+
 package crashhandler;
 
 import com.google.genai.Client;

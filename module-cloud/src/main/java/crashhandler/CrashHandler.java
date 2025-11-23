@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Filename    = CrashHandler.java
+ * Author      = Sooryanarayanan Ganesh
+ * Project     = Comm-Uni-Cator
+ * Description = Handles crashes and stores exceptions with java crash handler.
+ *****************************************************************************/
+
 package crashhandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
