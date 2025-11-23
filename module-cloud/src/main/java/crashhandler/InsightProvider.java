@@ -26,6 +26,7 @@ class InsightProvider {
             this.client = Client.builder()
                     .apiKey(System.getenv("GEMINI_API_KEY"))
                     .build();
+            connectionFlag = true;
         } catch (Exception e) {
             connectionFlag = false;
         }
