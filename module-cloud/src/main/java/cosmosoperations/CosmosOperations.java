@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Filename    = CosmosOperations.java
+ * Author      = Sidarth Prabhu
+ * Project     = Comm-Uni-Cator
+ * Description = Cosmos Helper for the function app to connect, store and retrieve from DB
+ *****************************************************************************/
+
 package cosmosoperations;
 
 import com.azure.cosmos.ConsistencyLevel;

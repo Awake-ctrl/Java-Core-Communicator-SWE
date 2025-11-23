@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Filename    = CloudLogger.java
+ * Author      = Sidarth Prabhu
+ * Project     = Comm-Uni-Cator
+ * Description = Cloud Logger methods for other modules
+ *****************************************************************************/
+
 package functionlibrary;
 
 import java.util.concurrent.CompletableFuture;
