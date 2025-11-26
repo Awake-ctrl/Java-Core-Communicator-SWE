@@ -37,7 +37,7 @@ class CosmosOperationsTest {
                 dataNode
         );
         deleteContainerEntity = new Entity(
-                "TestModule",
+                "TestCosmosCloud",
                 "TestTable",
                 null, null, -1, null, null
         );
