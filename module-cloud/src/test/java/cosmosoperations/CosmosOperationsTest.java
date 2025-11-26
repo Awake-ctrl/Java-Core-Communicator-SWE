@@ -210,7 +210,7 @@ class CosmosOperationsTest {
         updatedData.put("data2", 20);
 
         Entity updateEntity = new Entity(
-                "TestModule",
+                "TestCosmosCloud",
                 "TestTable",
                 "TestId",
                 null,
@@ -230,7 +230,7 @@ class CosmosOperationsTest {
     @Test
     void updateData_AddField() {
         cosmosDbConnector.postData(new Entity(
-                "TestModule",
+                "TestCosmosCloud",
                 "TestTable",
                 "TestUpdate",
                 null,
@@ -242,14 +242,14 @@ class CosmosOperationsTest {
         dataWrapper.put("data1", 999);
 
         Entity entity = new Entity(
-                "TestModule", "TestTable", "TestUpdate",
+                "TestCosmosCloud", "TestTable", "TestUpdate",
                 "data1", -1, null, dataWrapper
         );
 
         CloudResponse response = cosmosDbConnector.updateData(entity);
         assertEquals(200, response.status_code());
         cosmosDbConnector.deleteData(new Entity(
-                "TestModule",
+                "TestCosmosCloud",
                 "TestTable",
                 "TestUpdate",
                 null,
