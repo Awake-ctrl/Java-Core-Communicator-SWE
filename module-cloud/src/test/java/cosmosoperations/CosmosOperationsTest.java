@@ -28,7 +28,7 @@ class CosmosOperationsTest {
         dataNode.put("data2", 1);
 
         testEntity = new Entity(
-                "TestModule",
+                "TestCosmosCloud",
                 "TestTable",
                 "TestId",
                 null,
