@@ -30,13 +30,17 @@ class InsightProvider {
     InsightProvider() {
 
         try {
-            this.client = Client.builder()
-                    .apiKey(System.getenv("GEMINI_API_KEY"))
-                    .build();
+            this.client = createClient();
             connectionFlag = true;
         } catch (Exception e) {
             connectionFlag = false;
         }
+    }
+
+    protected Client createClient() {
+        return Client.builder()
+                .apiKey(System.getenv("GEMINI_API_KEY"))
+                .build();
     }
 
     /** Function to get the AI insights on crashes and exceptions.
@@ -57,7 +61,7 @@ class InsightProvider {
                     null
             );
         } catch (Exception e) {
-            return "No response, NOJOY" + e.getMessage();
+            return "No response, NOJOY:" + e.getMessage();
         }
 
         return response.text();
