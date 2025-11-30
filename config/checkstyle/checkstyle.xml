@@ -8,6 +8,7 @@
     <property name="severity" value="error"/>
     <property name="fileExtensions" value="java"/>
 
+
     <!-- Checks for whitespace issues -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
