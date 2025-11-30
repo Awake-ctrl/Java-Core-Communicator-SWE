@@ -63,8 +63,28 @@ public class CrashHandler implements ICrashHandler {
         final InsightProvider insightProvider = new InsightProvider();
 
         try {
-            final CloudResponse responseCreate = cloudFunctionLibrary.cloudCreate(new Entity("CLOUD", "ExceptionLogs", null, null, -1, null, null)).join();
-            final CloudResponse responseGet = cloudFunctionLibrary.cloudGet(new Entity("CLOUD", "ExceptionLogs", null, null, 1, null, null)).join();
+            final CloudResponse responseCreate = cloudFunctionLibrary.cloudCreate(
+                    new Entity(
+                            "CLOUD",
+                            "ExceptionLogs",
+                            null,
+                            null,
+                            -1,
+                            null,
+                            null
+                    )
+            ).join();
+            final CloudResponse responseGet = cloudFunctionLibrary.cloudGet(
+                    new Entity(
+                            "CLOUD",
+                            "ExceptionLogs",
+                            null,
+                            null,
+                            1,
+                            null,
+                            null
+                    )
+            ).join();
 
             if (responseCreate.status_code() != SUCCESS_CODE || responseGet.status_code() != SUCCESS_CODE) {
                 throw new RuntimeException("Cloud Error...");
@@ -82,7 +102,13 @@ public class CrashHandler implements ICrashHandler {
             final String exceptionString = exceptionToString(exception);
             final String stackJoined = stackToSingleString(exception.getStackTrace());
 
-            final JsonNode exceptionJsonNode = toJsonNode(exceptionName, timestamp, exceptionMessage, exceptionString, stackJoined);
+            final JsonNode exceptionJsonNode = toJsonNode(
+                    exceptionName,
+                    timestamp,
+                    exceptionMessage,
+                    exceptionString,
+                    stackJoined
+            );
 
             try {
                 final String response = insightProvider.getInsights(exceptionJsonNode.toString());
@@ -118,7 +144,8 @@ public class CrashHandler implements ICrashHandler {
         return sb.toString();
     }
 
-    private JsonNode toJsonNode(final String eName, final String timeStamp, final String eMsg, final String eDetails, final String eTrace) {
+    private JsonNode toJsonNode(final String eName, final String timeStamp, final String eMsg,
+                                final String eDetails, final String eTrace) {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode jsonNode = mapper.createObjectNode()
                 .put("ExceptionName", eName)
