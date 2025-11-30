@@ -218,7 +218,8 @@ public class CosmosOperations implements IdbConnector {
             return new CloudResponse(HTTP_OK, "Document inserted successfully.", null);
         } catch (CosmosException e) {
             if (e.getStatusCode() == HTTP_CONFLICT) {
-                return new CloudResponse(HTTP_CONFLICT, "Document with ID '" + request.id() + "' already exists.", null);
+                return new CloudResponse(HTTP_CONFLICT, "Document with ID '"
+                        + request.id() + "' already exists.", null);
             }
             throw e;
         }
@@ -259,15 +260,18 @@ public class CosmosOperations implements IdbConnector {
 
         // Case 1: Delete specific field if both ID and Type are present
         if (hasId(request) && request.type() != null && !request.type().isEmpty()) {
-            final CosmosItemResponse<ObjectNode> response = container.readItem(request.id(), new PartitionKey(request.id()), ObjectNode.class);
+            final CosmosItemResponse<ObjectNode> response = container.readItem(request.id(),
+                    new PartitionKey(request.id()), ObjectNode.class);
             final ObjectNode document = response.getItem();
 
             final JsonNode dataNode = document.get("data");
             if (dataNode != null && dataNode.isObject()) {
                 if (((ObjectNode) dataNode).remove(request.type()) != null) {
                     document.put("timestamp", (double) System.currentTimeMillis());
-                    container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
-                    return new CloudResponse(HTTP_OK, "Field '" + request.type() + "' deleted successfully.", null);
+                    container.replaceItem(document, request.id(), new PartitionKey(request.id()),
+                            new CosmosItemRequestOptions());
+                    return new CloudResponse(HTTP_OK, "Field '" + request.type()
+                            + "' deleted successfully.", null);
                 }
             }
             return new CloudResponse(HTTP_NOT_FOUND, "Field '" + request.type() + "' not found.", null);
@@ -280,7 +284,8 @@ public class CosmosOperations implements IdbConnector {
                 return new CloudResponse(HTTP_OK, "Document deleted successfully.", null);
             } catch (CosmosException e) {
                 if (e.getStatusCode() == HTTP_NOT_FOUND) {
-                    return new CloudResponse(HTTP_NOT_FOUND, "Document with ID '" + request.id() + "' not found.", null);
+                    return new CloudResponse(HTTP_NOT_FOUND, "Document with ID '" + request.id()
+                            + "' not found.", null);
                 }
                 throw e;
             }
@@ -301,7 +306,8 @@ public class CosmosOperations implements IdbConnector {
         final CosmosContainer container = database.getContainer(request.module() + "_" + request.table());
 
         if (request.type() != null && !request.type().isEmpty()) {
-            final CosmosItemResponse<ObjectNode> response = container.readItem(request.id(), new PartitionKey(request.id()), ObjectNode.class);
+            final CosmosItemResponse<ObjectNode> response = container.readItem(request.id(),
+                    new PartitionKey(request.id()), ObjectNode.class);
             final ObjectNode document = response.getItem();
 
             JsonNode dataNode = document.get("data");
@@ -313,15 +319,18 @@ public class CosmosOperations implements IdbConnector {
             final JsonNode newValue = request.data().get(request.type());
 
             if (newValue == null) {
-                return new CloudResponse(HTTP_BAD_REQUEST, "New value was not provided for data to be updated: "
+                return new CloudResponse(HTTP_BAD_REQUEST,
+                        "New value was not provided for data to be updated: "
                         + request.type(), null);
             }
 
             ((ObjectNode) dataNode).set(request.type(), newValue);
             document.put("timestamp", (double) System.currentTimeMillis());
 
-            container.replaceItem(document, request.id(), new PartitionKey(request.id()), new CosmosItemRequestOptions());
-            return new CloudResponse(HTTP_OK, "Field '" + request.type() + "' updated successfully.", null);
+            container.replaceItem(document, request.id(), new PartitionKey(request.id()),
+                    new CosmosItemRequestOptions());
+            return new CloudResponse(HTTP_OK, "Field '" + request.type()
+                    + "' updated successfully.", null);
         }
 
         final ObjectNode document = mapper.createObjectNode();
