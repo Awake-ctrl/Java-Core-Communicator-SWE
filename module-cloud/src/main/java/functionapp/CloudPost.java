@@ -40,7 +40,8 @@ public class CloudPost extends CloudHelper {
 
     @FunctionName("CloudPost")
     public HttpResponseMessage runCloudPost(
-            @HttpTrigger(name = "req", methods = HttpMethod.POST, authLevel = AuthorizationLevel.ANONYMOUS) final HttpRequestMessage<Optional<String>> request,
+            @HttpTrigger(name = "req", methods = HttpMethod.POST, authLevel = AuthorizationLevel.ANONYMOUS)
+            final HttpRequestMessage<Optional<String>> request,
             final ExecutionContext context) throws JsonProcessingException {
         context.getLogger().info("Java HTTP trigger processed a request.");
         try {
@@ -52,7 +53,8 @@ public class CloudPost extends CloudHelper {
             final IdbConnector dbConnector = DbConnectorFactory.getDbConnector("cosmo");
             context.getLogger().info("Initialized DB Connector");
             final CloudResponse cloudResponse = dbConnector.postData(entityRequest);
-            context.getLogger().info("Received Post CloudResponse: [" + cloudResponse.status_code() + "] " + cloudResponse.message());
+            context.getLogger().info("Received Post CloudResponse: ["
+                                    + cloudResponse.status_code() + "] " + cloudResponse.message());
 
             return handleResponse(cloudResponse, request);
 
