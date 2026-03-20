@@ -29,10 +29,10 @@ jobs:
         shell: pwsh
         run: |
           $env_content = @"
-          COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT2 }}
-          COSMOS_KEY=${{ secrets.COSMOS_KEY2 }}
+          COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}
+          COSMOS_KEY=${{ secrets.COSMOS_KEY }}
           COSMOS_DATABASE=${{ secrets.COSMOS_DATABASE }}
-          CLOUD_BASE_URL=${{ secrets.CLOUD_BASE_URL2 }}
+          CLOUD_BASE_URL=${{ secrets.CLOUD_BASE_URL }}
           "@
           $env_content | Out-File -FilePath './${{ env.POM_XML_DIRECTORY }}/.env' -Encoding utf8
 
